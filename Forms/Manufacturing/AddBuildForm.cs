@@ -1,3 +1,4 @@
+using InvenTreeAutomationFramework.Util;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Forms.Manufacturing;
@@ -10,15 +11,12 @@ public class AddBuildForm : BaseForm
     private ILocator BuildQuantityInput() => this.page.Locator("input[name='quantity']");
     private ILocator TargetCompletionDateInput() => this.page.Locator("input[aria-label='date-field-target_date']");
     private ILocator ExternalLinkInput() => this.page.Locator("input[help_text='Link to external URL']");
-    private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class=' css-23xn0o-indicatorContainer']");
-
-    private ILocator ListBox() => this.page.Locator("div[role='listbox']"); //TODO: To be factored out
+    private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class=' css-23xn0o-indicatorContainer']");    
 
     public AddBuildForm(IPage page) : base(page) { }
 
     public async Task FillForm(string part, string desc, string quantity, string targetDate, string external, string responsible)
-    {
-        // await this.FillBuildOrderRef(buildRef);
+    {        
         await this.SelectPart(part);
         await this.FillDescription(desc);
         await this.FillBuildQuantity(quantity);
@@ -30,37 +28,13 @@ public class AddBuildForm : BaseForm
     public async Task SelectPart(string option)
     {
         await this.PartDropdownButton().ClickAsync();
-        await this.ListBox().WaitForAsync();
-        await this.page.WaitForSelectorAsync("//div[contains(text(), 'Loading...')]", new PageWaitForSelectorOptions { State = WaitForSelectorState.Detached, Timeout = 3000 });
-        var partList = await this.ListBox().Locator("p").AllAsync();
-
-        foreach (var item in partList)
-        {
-            string? s = await item.TextContentAsync();
-            if (s != null && s.Equals(option))
-            {
-                await item.ClickAsync();
-                break;
-            }
-        }
+        await ListboxHelper.SelectListboxOption(this.page, option);
     }
 
     public async Task SelectResponsible(string option)
     {
         await this.ResponsibleDropdownButton().ClickAsync();
-        await this.ListBox().WaitForAsync();
-        await this.page.WaitForSelectorAsync("//div[contains(text(), 'Loading...')]", new PageWaitForSelectorOptions { State = WaitForSelectorState.Detached, Timeout = 3000 });
-        var responsibleList = await this.ListBox().Locator("p").AllAsync();
-
-        foreach (var item in responsibleList)
-        {
-            string? s = await item.TextContentAsync();
-            if (s != null && s.Equals(option))
-            {
-                await item.ClickAsync();
-                break;
-            }
-        }
+        await ListboxHelper.SelectListboxOption(this.page, option);
     }
 
     public async Task FillBuildOrderRef(string input) { await this.BuildOrderRefInput().FillAsync(input); }

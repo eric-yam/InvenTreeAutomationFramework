@@ -22,7 +22,7 @@ public class ManufacturingTestSuite : BaseTest
     [AllureName("Manufacturing - Add Build Order")]
     [AllureTag("Manufacturing")]
     [Description("User logs in and adds a new build order in the manufacturing section. Table is validated to ensure new build order is added in the manufacturing inventory table.")]
-    public async Task Test_1_Add_Build_Form()
+    public async Task Test_1_Add_Build_Form() 
     {
         //Login
         LoginPage loginPage = new LoginPage(Page);
