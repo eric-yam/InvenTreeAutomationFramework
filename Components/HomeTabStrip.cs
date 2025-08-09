@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Components;

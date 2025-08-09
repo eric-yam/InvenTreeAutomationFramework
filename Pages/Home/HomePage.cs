@@ -5,14 +5,15 @@ namespace InvenTreeAutomationFramework.Pages.Home;
 
 public class HomePage : AppPage
 {
-    private ManufacturingTab manufacturingPage;
+    private ManufacturingSectionTab manufacturingSectionTab;
+
     public HomePage(IPage page) : base(page)
     {
-        this.manufacturingPage = new ManufacturingTab(this.page);
+        this.manufacturingSectionTab = new ManufacturingSectionTab(this.page);
     }
 
-    public ManufacturingTab GetManufacturingTab()
+    public ManufacturingSectionTab GetManufacturingTab()
     {
-        return this.manufacturingPage;
+        return this.manufacturingSectionTab;
     }
 }

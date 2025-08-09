@@ -8,6 +8,7 @@ using InvenTreeAutomationFramework.Pages.Home;
 using InvenTreeAutomationFramework.Pages.SectionTabs;
 using InvenTreeAutomationFramework.Pages.Login;
 using InvenTreeAutomationFramework.Util;
+using InvenTreeAutomationFramework.Pages.SideBarTabs.Manufacturing;
 
 namespace InvenTreeAutomationFramework.Tests;
 
@@ -22,7 +23,7 @@ public class ManufacturingTestSuite : BaseTest
     [AllureName("Manufacturing - Add Build Order")]
     [AllureTag("Manufacturing")]
     [Description("User logs in and adds a new build order in the manufacturing section. Table is validated to ensure new build order is added in the manufacturing inventory table.")]
-    public async Task Test_1_Add_Build_Form() 
+    public async Task Test_1_Add_Build_Form()
     {
         //Login
         LoginPage loginPage = new LoginPage(Page);
@@ -38,12 +39,14 @@ public class ManufacturingTestSuite : BaseTest
         HomePage homePage = new HomePage(Page);
         await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
 
-        ManufacturingTab mt = homePage.GetManufacturingTab();
-        await mt.InitializeTable();
+        ManufacturingSectionTab mst = homePage.GetManufacturingTab();
+        BuildOrderTab buildOrderTab = mst.GetBuildOrderTab();
+        // ManufacturingTab mt = homePage.GetManufacturingTab();
+        await buildOrderTab.InitializeTable();
         var response = APIHelper.GetResponse();
 
         //Open/Fill Build Add Form 
-        await mt.ClickAddButton();
+        await buildOrderTab.ClickAddButton();
         AddBuildForm addBuildForm = new AddBuildForm(Page);
         await addBuildForm.FillForm("Blue Chair", "Automation - Test", "2", "2025-12-04", "", "admin");
         await addBuildForm.ClickSubmitButton();
@@ -53,10 +56,10 @@ public class ManufacturingTestSuite : BaseTest
 
         //Verify Added To Table
         await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
-        await mt.InitializeTable();
+        await buildOrderTab.InitializeTable();
         response = APIHelper.GetResponse();
 
-        Table mtTable = mt.GetTableObj();
+        Table mtTable = buildOrderTab.GetTableObj();
         Dictionary<string, Dictionary<string, string>> updatedResults = APIHelper.GetResponseTableResults(response, await mtTable.GetHeaderNames());
         // List<JsonElement> updatedResults = APIHelper.GetListProperty(APIPropertyEnums.Results);
         // updatedResults.First();

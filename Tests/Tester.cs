@@ -7,6 +7,7 @@ using InvenTreeAutomationFramework.Pages.Home;
 using InvenTreeAutomationFramework.Pages.SectionTabs;
 using InvenTreeAutomationFramework.Pages.Login;
 using InvenTreeAutomationFramework.Util;
+using InvenTreeAutomationFramework.Pages.SideBarTabs.Manufacturing;
 
 namespace InvenTreeAutomationFramework.Tests;
 
@@ -41,23 +42,27 @@ public class Tester : BaseTest
 
         // UserDataModel dm2 = TestDataProvider.DeserializeResponse<UserDataModel>(temp.ToString());
 
-        ManufacturingTab mt = homePage.GetManufacturingTab();
-        await mt.InitializeTable();
+        ManufacturingSectionTab mst = new ManufacturingSectionTab(Page);
+        BuildOrderTab buildOrderTab = mst.GetBuildOrderTab();
+        // ManufacturingTab mt = homePage.GetManufacturingTab();
+        await buildOrderTab.InitializeTable();
         temp = APIHelper.GetResponse(); //Get Response for manufacturing table 
 
         await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
-        ManufacturingTab mp2 = new ManufacturingTab(Page);
-        await mp2.InitializeTable();
+        ManufacturingSectionTab mst2 = new ManufacturingSectionTab(Page);
+        BuildOrderTab buildOrderTab2 = mst.GetBuildOrderTab();
+        // ManufacturingTab mp2 = new ManufacturingTab(Page);
+        await buildOrderTab2.InitializeTable();
 
-        Assert.That(mt.GetTableObj().Equals(mp2.GetTableObj()), Is.EqualTo(true));
+        Assert.That(buildOrderTab.GetTableObj().Equals(buildOrderTab2.GetTableObj()), Is.EqualTo(true));
 
-        Dictionary<string, Dictionary<string, string>> ResponseResults = APIHelper.GetResponseTableResults(temp, await mt.GetTableObj().GetHeaderNames());
+        Dictionary<string, Dictionary<string, string>> ResponseResults = APIHelper.GetResponseTableResults(temp, await buildOrderTab.GetTableObj().GetHeaderNames());
 
         // bool isEqual = ResponseResults.Values.First().Except(mp.GetTable().GetRowAsDictionary("BO0027")).Any();    
 
         foreach (Dictionary<string, string> respVal in ResponseResults.Values)
         {
-            TableRow row = mt.GetTableObj().GetRow(respVal["Reference"]); // need to get different key for different tables
+            TableRow row = buildOrderTab.GetTableObj().GetRow(respVal["Reference"]); // need to get different key for different tables
             Assert.That(row.GetRowAsDictionary().Except(respVal).Any(), Is.EqualTo(false),
                 $"UI: {AssertionMessageHelper.PrintEnumerable(row.GetRowAsDictionary())} " +
                 $"Backend: {AssertionMessageHelper.PrintEnumerable(respVal)} " +
