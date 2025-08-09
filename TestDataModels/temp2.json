@@ -1,0 +1,1259 @@
+{
+    "name": "Build List",
+    "description": "API endpoint for accessing a list of Build objects.\n\n- GET: Return list of objects (with filters)\n- POST: Create a new Build object",
+    "renders": [
+        "application/json"
+    ],
+    "parses": [
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ],
+    "actions": {
+        "POST": {
+            "pk": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "ID"
+            },
+            "title": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Description",
+                "help_text": "Brief description of the build (optional)",
+                "max_length": 100
+            },
+            "barcode_hash": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Barcode Hash",
+                "help_text": "Unique hash of barcode data",
+                "max_length": 128
+            },
+            "batch": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Batch Code",
+                "help_text": "Batch code for this build output",
+                "max_length": 100
+            },
+            "creation_date": {
+                "type": "date",
+                "required": false,
+                "read_only": true,
+                "label": "Creation Date"
+            },
+            "completed": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "Completed items",
+                "help_text": "Number of stock items which have been completed",
+                "default": 0
+            },
+            "completion_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Completion Date"
+            },
+            "destination": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Destination Location",
+                "help_text": "Select location where the completed items will be stored",
+                "model": "stocklocation",
+                "api_url": "/api/stock/location/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "external": {
+                "type": "boolean",
+                "required": false,
+                "read_only": false,
+                "label": "External Build",
+                "help_text": "This build order is fulfilled externally",
+                "default": false
+            },
+            "parent": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Parent Build",
+                "help_text": "BuildOrder to which this build is allocated",
+                "model": "build",
+                "api_url": "/api/build/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "part": {
+                "type": "related field",
+                "required": true,
+                "read_only": false,
+                "label": "Part",
+                "help_text": "Select part to build",
+                "model": "part",
+                "api_url": "/api/part/",
+                "pk_field": "pk",
+                "filters": {
+                    "assembly": true
+                }
+            },
+            "part_name": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Part Name"
+            },
+            "part_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Part detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "IPN": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "IPN",
+                        "help_text": "Internal Part Number",
+                        "max_length": 100
+                    },
+                    "barcode_hash": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Barcode Hash",
+                        "help_text": "Unique hash of barcode data",
+                        "max_length": 128
+                    },
+                    "category_default_location": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Category default location"
+                    },
+                    "default_location": {
+                        "type": "related field",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Default Location",
+                        "help_text": "Where is this item normally stored?",
+                        "model": "stocklocation",
+                        "api_url": "/api/stock/location/",
+                        "pk_field": "pk",
+                        "filters": {}
+                    },
+                    "default_expiry": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Default Expiry",
+                        "help_text": "Expiry time (in days) for stock items of this part",
+                        "min_value": 0,
+                        "max_value": 2147483647,
+                        "default": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Name",
+                        "help_text": "Part name",
+                        "max_length": 100
+                    },
+                    "revision": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Revision",
+                        "max_length": 100,
+                        "default": "",
+                        "help_text": "Part revision or version number"
+                    },
+                    "full_name": {
+                        "type": "field",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Full name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Description",
+                        "help_text": "Part description (optional)",
+                        "max_length": 250
+                    },
+                    "image": {
+                        "type": "image upload",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Image",
+                        "max_length": 100
+                    },
+                    "thumbnail": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Thumbnail"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Active",
+                        "help_text": "Is this part active?",
+                        "default": true
+                    },
+                    "locked": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Locked",
+                        "help_text": "Locked parts cannot be edited",
+                        "default": false
+                    },
+                    "assembly": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Assembly",
+                        "help_text": "Can this part be built from other parts?",
+                        "default": false
+                    },
+                    "component": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Component",
+                        "help_text": "Can this part be used to build other parts?",
+                        "default": true
+                    },
+                    "is_template": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Is Template",
+                        "help_text": "Is this part a template part?",
+                        "default": false
+                    },
+                    "purchaseable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Purchaseable",
+                        "help_text": "Can this part be purchased from external suppliers?",
+                        "default": true
+                    },
+                    "salable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Salable",
+                        "help_text": "Can this part be sold to customers?",
+                        "default": false
+                    },
+                    "testable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Testable",
+                        "help_text": "Can this part have test results recorded against it?",
+                        "default": false
+                    },
+                    "trackable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Trackable",
+                        "help_text": "Does this part have tracking for unique items?",
+                        "default": false
+                    },
+                    "virtual": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Virtual",
+                        "help_text": "Is this a virtual part, such as a software product or license?",
+                        "default": false
+                    },
+                    "units": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Units",
+                        "help_text": "Units of measure for this part",
+                        "max_length": 20,
+                        "default": ""
+                    },
+                    "pricing_min": {
+                        "type": "decimal",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Pricing min",
+                        "max_digits": 19,
+                        "decimal_places": 6
+                    },
+                    "pricing_max": {
+                        "type": "decimal",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Pricing max",
+                        "max_digits": 19,
+                        "decimal_places": 6
+                    }
+                }
+            },
+            "project_code": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Project Code",
+                "help_text": "Project code for this build order",
+                "model": "projectcode",
+                "api_url": "/api/project-code/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "project_code_label": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Project Code Label"
+            },
+            "project_code_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Project code detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "code": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Project Code",
+                        "help_text": "Unique project code",
+                        "max_length": 50
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Description",
+                        "help_text": "Project description",
+                        "max_length": 200
+                    },
+                    "responsible": {
+                        "type": "related field",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Responsible",
+                        "help_text": "User or group responsible for this project",
+                        "model": "owner",
+                        "api_url": "/api/user/owner/",
+                        "pk_field": "pk",
+                        "filters": {}
+                    },
+                    "responsible_detail": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Responsible detail",
+                        "children": {
+                            "pk": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": true,
+                                "label": "ID"
+                            },
+                            "owner_id": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": false,
+                                "label": "Owner id",
+                                "min_value": 0,
+                                "max_value": 2147483647
+                            },
+                            "owner_model": {
+                                "type": "string",
+                                "required": false,
+                                "read_only": true,
+                                "label": "Owner model"
+                            },
+                            "name": {
+                                "type": "string",
+                                "required": false,
+                                "read_only": true,
+                                "label": "Name"
+                            },
+                            "label": {
+                                "type": "string",
+                                "required": false,
+                                "read_only": true,
+                                "label": "Label"
+                            }
+                        }
+                    }
+                }
+            },
+            "overdue": {
+                "type": "boolean",
+                "required": false,
+                "read_only": true,
+                "label": "Overdue",
+                "default": false
+            },
+            "reference": {
+                "type": "string",
+                "required": true,
+                "read_only": false,
+                "label": "Reference",
+                "default": "BO0027",
+                "help_text": "Build Order Reference",
+                "max_length": 64
+            },
+            "sales_order": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Sales Order Reference",
+                "help_text": "SalesOrder to which this build is allocated",
+                "model": "salesorder",
+                "api_url": "/api/order/so/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "quantity": {
+                "type": "float",
+                "required": true,
+                "read_only": false,
+                "label": "Build Quantity",
+                "default": 1,
+                "help_text": "Number of stock items to build"
+            },
+            "start_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Build start date",
+                "help_text": "Scheduled start date for this build order"
+            },
+            "status": {
+                "type": "choice",
+                "required": false,
+                "read_only": true,
+                "label": "Build Status",
+                "help_text": "Build status code",
+                "default": 10
+            },
+            "status_text": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Status text"
+            },
+            "status_custom_key": {
+                "type": "choice",
+                "required": false,
+                "read_only": true,
+                "label": "Custom status key",
+                "help_text": "Additional status information for this item",
+                "default": null
+            },
+            "target_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Target completion date",
+                "help_text": "Target date for build completion. Build will be overdue after this date."
+            },
+            "take_from": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Source Location",
+                "help_text": "Select location to take stock from for this build (leave blank to take from any stock location)",
+                "model": "stocklocation",
+                "api_url": "/api/stock/location/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "link": {
+                "type": "url",
+                "required": false,
+                "read_only": false,
+                "label": "External Link",
+                "help_text": "Link to external URL",
+                "max_length": 2000
+            },
+            "issued_by": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Issued by",
+                "help_text": "User who issued this build order",
+                "model": "user",
+                "api_url": [
+                    "/api/user/"
+                ],
+                "pk_field": "pk",
+                "filters": {},
+                "default": 4
+            },
+            "issued_by_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Issued by detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "username": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": true,
+                        "label": "Username",
+                        "help_text": "Username",
+                        "max_length": 150
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "First Name",
+                        "help_text": "First name of the user",
+                        "max_length": 150
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Last Name",
+                        "help_text": "Last name of the user",
+                        "max_length": 150
+                    },
+                    "email": {
+                        "type": "email",
+                        "required": true,
+                        "read_only": true,
+                        "label": "Email",
+                        "help_text": "Email address of the user",
+                        "max_length": 254
+                    }
+                }
+            },
+            "responsible": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Responsible",
+                "help_text": "User or group responsible for this build order",
+                "model": "owner",
+                "api_url": "/api/user/owner/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "responsible_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Responsible detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "owner_id": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Owner id",
+                        "min_value": 0,
+                        "max_value": 2147483647
+                    },
+                    "owner_model": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Owner model"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Name"
+                    },
+                    "label": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Label"
+                    }
+                }
+            },
+            "priority": {
+                "type": "integer",
+                "required": false,
+                "read_only": false,
+                "label": "Build Priority",
+                "help_text": "Priority of this build order",
+                "min_value": 0,
+                "max_value": 2147483647,
+                "default": 0
+            },
+            "level": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "Build Level"
+            }
+        },
+        "GET": {
+            "pk": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "ID"
+            },
+            "title": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Description",
+                "help_text": "Brief description of the build (optional)",
+                "max_length": 100
+            },
+            "barcode_hash": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Barcode Hash",
+                "help_text": "Unique hash of barcode data",
+                "max_length": 128
+            },
+            "batch": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Batch Code",
+                "help_text": "Batch code for this build output",
+                "max_length": 100
+            },
+            "creation_date": {
+                "type": "date",
+                "required": false,
+                "read_only": true,
+                "label": "Creation Date"
+            },
+            "completed": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "Completed items",
+                "help_text": "Number of stock items which have been completed",
+                "default": 0
+            },
+            "completion_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Completion Date"
+            },
+            "destination": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Destination Location",
+                "help_text": "Select location where the completed items will be stored",
+                "model": "stocklocation",
+                "api_url": "/api/stock/location/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "external": {
+                "type": "boolean",
+                "required": false,
+                "read_only": false,
+                "label": "External Build",
+                "help_text": "This build order is fulfilled externally",
+                "default": false
+            },
+            "parent": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Parent Build",
+                "help_text": "BuildOrder to which this build is allocated",
+                "model": "build",
+                "api_url": "/api/build/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "part": {
+                "type": "related field",
+                "required": true,
+                "read_only": false,
+                "label": "Part",
+                "help_text": "Select part to build",
+                "model": "part",
+                "api_url": "/api/part/",
+                "pk_field": "pk",
+                "filters": {
+                    "assembly": true
+                }
+            },
+            "part_name": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Part Name"
+            },
+            "part_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Part detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "IPN": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "IPN",
+                        "help_text": "Internal Part Number",
+                        "max_length": 100
+                    },
+                    "barcode_hash": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Barcode Hash",
+                        "help_text": "Unique hash of barcode data",
+                        "max_length": 128
+                    },
+                    "category_default_location": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Category default location"
+                    },
+                    "default_location": {
+                        "type": "related field",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Default Location",
+                        "help_text": "Where is this item normally stored?",
+                        "model": "stocklocation",
+                        "api_url": "/api/stock/location/",
+                        "pk_field": "pk",
+                        "filters": {}
+                    },
+                    "default_expiry": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Default Expiry",
+                        "help_text": "Expiry time (in days) for stock items of this part",
+                        "min_value": 0,
+                        "max_value": 2147483647,
+                        "default": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Name",
+                        "help_text": "Part name",
+                        "max_length": 100
+                    },
+                    "revision": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Revision",
+                        "max_length": 100,
+                        "default": "",
+                        "help_text": "Part revision or version number"
+                    },
+                    "full_name": {
+                        "type": "field",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Full name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Description",
+                        "help_text": "Part description (optional)",
+                        "max_length": 250
+                    },
+                    "image": {
+                        "type": "image upload",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Image",
+                        "max_length": 100
+                    },
+                    "thumbnail": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Thumbnail"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Active",
+                        "help_text": "Is this part active?",
+                        "default": true
+                    },
+                    "locked": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Locked",
+                        "help_text": "Locked parts cannot be edited",
+                        "default": false
+                    },
+                    "assembly": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Assembly",
+                        "help_text": "Can this part be built from other parts?",
+                        "default": false
+                    },
+                    "component": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Component",
+                        "help_text": "Can this part be used to build other parts?",
+                        "default": true
+                    },
+                    "is_template": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Is Template",
+                        "help_text": "Is this part a template part?",
+                        "default": false
+                    },
+                    "purchaseable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Purchaseable",
+                        "help_text": "Can this part be purchased from external suppliers?",
+                        "default": true
+                    },
+                    "salable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Salable",
+                        "help_text": "Can this part be sold to customers?",
+                        "default": false
+                    },
+                    "testable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Testable",
+                        "help_text": "Can this part have test results recorded against it?",
+                        "default": false
+                    },
+                    "trackable": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Trackable",
+                        "help_text": "Does this part have tracking for unique items?",
+                        "default": false
+                    },
+                    "virtual": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Virtual",
+                        "help_text": "Is this a virtual part, such as a software product or license?",
+                        "default": false
+                    },
+                    "units": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Units",
+                        "help_text": "Units of measure for this part",
+                        "max_length": 20,
+                        "default": ""
+                    },
+                    "pricing_min": {
+                        "type": "decimal",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Pricing min",
+                        "max_digits": 19,
+                        "decimal_places": 6
+                    },
+                    "pricing_max": {
+                        "type": "decimal",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Pricing max",
+                        "max_digits": 19,
+                        "decimal_places": 6
+                    }
+                }
+            },
+            "project_code": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Project Code",
+                "help_text": "Project code for this build order",
+                "model": "projectcode",
+                "api_url": "/api/project-code/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "project_code_label": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Project Code Label"
+            },
+            "project_code_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Project code detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "code": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Project Code",
+                        "help_text": "Unique project code",
+                        "max_length": 50
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Description",
+                        "help_text": "Project description",
+                        "max_length": 200
+                    },
+                    "responsible": {
+                        "type": "related field",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Responsible",
+                        "help_text": "User or group responsible for this project",
+                        "model": "owner",
+                        "api_url": "/api/user/owner/",
+                        "pk_field": "pk",
+                        "filters": {}
+                    },
+                    "responsible_detail": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Responsible detail",
+                        "children": {
+                            "pk": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": true,
+                                "label": "ID"
+                            },
+                            "owner_id": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": false,
+                                "label": "Owner id",
+                                "min_value": 0,
+                                "max_value": 2147483647
+                            },
+                            "owner_model": {
+                                "type": "string",
+                                "required": false,
+                                "read_only": true,
+                                "label": "Owner model"
+                            },
+                            "name": {
+                                "type": "string",
+                                "required": false,
+                                "read_only": true,
+                                "label": "Name"
+                            },
+                            "label": {
+                                "type": "string",
+                                "required": false,
+                                "read_only": true,
+                                "label": "Label"
+                            }
+                        }
+                    }
+                }
+            },
+            "overdue": {
+                "type": "boolean",
+                "required": false,
+                "read_only": true,
+                "label": "Overdue",
+                "default": false
+            },
+            "reference": {
+                "type": "string",
+                "required": true,
+                "read_only": false,
+                "label": "Reference",
+                "default": "BO0027",
+                "help_text": "Build Order Reference",
+                "max_length": 64
+            },
+            "sales_order": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Sales Order Reference",
+                "help_text": "SalesOrder to which this build is allocated",
+                "model": "salesorder",
+                "api_url": "/api/order/so/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "quantity": {
+                "type": "float",
+                "required": true,
+                "read_only": false,
+                "label": "Build Quantity",
+                "default": 1,
+                "help_text": "Number of stock items to build"
+            },
+            "start_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Build start date",
+                "help_text": "Scheduled start date for this build order"
+            },
+            "status": {
+                "type": "choice",
+                "required": false,
+                "read_only": true,
+                "label": "Build Status",
+                "help_text": "Build status code",
+                "default": 10
+            },
+            "status_text": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Status text"
+            },
+            "status_custom_key": {
+                "type": "choice",
+                "required": false,
+                "read_only": true,
+                "label": "Custom status key",
+                "help_text": "Additional status information for this item",
+                "default": null
+            },
+            "target_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Target completion date",
+                "help_text": "Target date for build completion. Build will be overdue after this date."
+            },
+            "take_from": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Source Location",
+                "help_text": "Select location to take stock from for this build (leave blank to take from any stock location)",
+                "model": "stocklocation",
+                "api_url": "/api/stock/location/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "link": {
+                "type": "url",
+                "required": false,
+                "read_only": false,
+                "label": "External Link",
+                "help_text": "Link to external URL",
+                "max_length": 2000
+            },
+            "issued_by": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Issued by",
+                "help_text": "User who issued this build order",
+                "model": "user",
+                "api_url": [
+                    "/api/user/"
+                ],
+                "pk_field": "pk",
+                "filters": {},
+                "default": 4
+            },
+            "issued_by_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Issued by detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "username": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": true,
+                        "label": "Username",
+                        "help_text": "Username",
+                        "max_length": 150
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "First Name",
+                        "help_text": "First name of the user",
+                        "max_length": 150
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Last Name",
+                        "help_text": "Last name of the user",
+                        "max_length": 150
+                    },
+                    "email": {
+                        "type": "email",
+                        "required": true,
+                        "read_only": true,
+                        "label": "Email",
+                        "help_text": "Email address of the user",
+                        "max_length": 254
+                    }
+                }
+            },
+            "responsible": {
+                "type": "related field",
+                "required": false,
+                "read_only": false,
+                "label": "Responsible",
+                "help_text": "User or group responsible for this build order",
+                "model": "owner",
+                "api_url": "/api/user/owner/",
+                "pk_field": "pk",
+                "filters": {}
+            },
+            "responsible_detail": {
+                "type": "nested object",
+                "required": false,
+                "read_only": true,
+                "label": "Responsible detail",
+                "children": {
+                    "pk": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": true,
+                        "label": "ID"
+                    },
+                    "owner_id": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Owner id",
+                        "min_value": 0,
+                        "max_value": 2147483647
+                    },
+                    "owner_model": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Owner model"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Name"
+                    },
+                    "label": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Label"
+                    }
+                }
+            },
+            "priority": {
+                "type": "integer",
+                "required": false,
+                "read_only": false,
+                "label": "Build Priority",
+                "help_text": "Priority of this build order",
+                "min_value": 0,
+                "max_value": 2147483647,
+                "default": 0
+            },
+            "level": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "Build Level"
+            }
+        }
+    },
+    "model": "build"
+}
