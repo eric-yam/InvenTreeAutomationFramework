@@ -5,10 +5,10 @@ using InvenTreeAutomationFramework.Dialogs;
 using InvenTreeAutomationFramework.Enums;
 using InvenTreeAutomationFramework.Forms.Manufacturing;
 using InvenTreeAutomationFramework.Pages.Home;
-using InvenTreeAutomationFramework.Pages.SectionTabs;
 using InvenTreeAutomationFramework.Pages.Login;
 using InvenTreeAutomationFramework.Util;
-using InvenTreeAutomationFramework.Pages.SideBarTabs.Manufacturing;
+using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection;
+using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.SideBarTabs;
 
 namespace InvenTreeAutomationFramework.Tests;
 

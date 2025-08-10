@@ -1,7 +1,7 @@
-using InvenTreeAutomationFramework.Pages.SideBarTabs.Manufacturing;
+using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.SideBarTabs;
 using Microsoft.Playwright;
 
-namespace InvenTreeAutomationFramework.Pages.SectionTabs;
+namespace InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection;
 
 public class ManufacturingSectionTab : BaseSectionTab
 {

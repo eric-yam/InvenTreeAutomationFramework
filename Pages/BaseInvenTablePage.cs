@@ -5,7 +5,7 @@ namespace InvenTreeAutomationFramework.Pages.SectionTabs;
 
 public abstract class BaseInvenTablePage : BasePage
 {
-    private ILocator AddButton() => this.page.Locator("button[aria-label='action-button-add-build-order']");
+    private ILocator AddButton() => this.page.Locator("button[aria-label*='add']");
     protected Table table;
 
     public BaseInvenTablePage(IPage page) : base(page)

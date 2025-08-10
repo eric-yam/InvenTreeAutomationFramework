@@ -2,13 +2,13 @@ using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Components;
 
-public class SectionSideBar : BaseComponent
+public class SideBar : BaseComponent
 {
     private const string SIDE_BAR_BUTTONS = "button[class*='Tab']";
     private ILocator SideBarButtons() => this.page.Locator("div[class*='mantine-Paper-root'] div[class*='mantine-Tabs-list']");
-        
+
     private Dictionary<string, ILocator> SideBarButtonsDictionary;
-    public SectionSideBar(IPage page) : base(page) { this.SideBarButtonsDictionary = new Dictionary<string, ILocator>(); }
+    public SideBar(IPage page) : base(page) { this.SideBarButtonsDictionary = new Dictionary<string, ILocator>(); }
 
     public async Task SetSideBar()
     {

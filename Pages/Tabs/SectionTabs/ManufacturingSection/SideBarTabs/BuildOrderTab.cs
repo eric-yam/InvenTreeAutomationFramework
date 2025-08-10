@@ -2,7 +2,7 @@ using InvenTreeAutomationFramework.Components;
 using InvenTreeAutomationFramework.Pages.SectionTabs;
 using Microsoft.Playwright;
 
-namespace InvenTreeAutomationFramework.Pages.SideBarTabs.Manufacturing;
+namespace InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.SideBarTabs;
 
 public class BuildOrderTab : BaseInvenTablePage
 {
