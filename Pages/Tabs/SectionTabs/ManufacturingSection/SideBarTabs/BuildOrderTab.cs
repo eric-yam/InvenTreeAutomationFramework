@@ -4,7 +4,7 @@ using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.SideBarTabs;
 
-public class BuildOrderTab : BaseInvenTablePage
+public class BuildOrderTab : BaseInvenTableTab
 {
     public BuildOrderTab(IPage page) : base(page) { }
 

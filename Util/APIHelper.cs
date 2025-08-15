@@ -103,4 +103,30 @@ public static class APIHelper
             throw new Exception("currentResponseJson has not been set or is null");
         }
     }
+
+    /*
+        This method takes a list of JsonElements and finds the JsonElement that has the matching property value, matching propertyValue and responsePropertyToMatch (of current JsonElement in iteration)
+        Then returns the property, responsePropertyToReturn of the specified JsonElement
+    */
+    public static JsonElement GetPropertyInList(APIPropertyEnums responseResults, APIPropertyEnums responsePropertyToMatch, APIPropertyEnums responsePropertyToReturn, string propertyValue)
+    {
+        if (currentResponseJson != null && currentResponseJson.Value.ValueKind != JsonValueKind.Null)
+        {
+            List<JsonElement> list = currentResponseJson.Value.GetProperty(APIProperty.APIPropertyDictionary[responseResults]).EnumerateArray().ToList();
+
+            foreach (JsonElement item in list)
+            {
+                if (item.GetProperty(APIProperty.APIPropertyDictionary[responsePropertyToMatch]).ToString().Equals(propertyValue))
+                {
+                    return item.GetProperty(APIProperty.APIPropertyDictionary[responsePropertyToReturn]);
+                }
+            }
+
+            return new JsonElement(); //Return empty JsonElement object
+        }
+        else
+        {
+            throw new Exception("currentResponseJson has not been set or is null");
+        }
+    }
 }

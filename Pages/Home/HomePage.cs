@@ -1,4 +1,4 @@
-using InvenTreeAutomationFramework.Pages.SectionTabs;
+using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Pages.Home;

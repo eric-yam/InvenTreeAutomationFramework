@@ -14,13 +14,13 @@ public static class APIHeaderHelper
         // { "Issued by",           el=>el.GetProperty("issued_by_detail").GetProperty("username").ToString() + el.GetProperty("issued_by_detail").GetProperty("first_name").ToString() + " " + el.GetProperty("issued_by_detail").GetProperty("last_name").ToString() ?? ""},
         
         { "Reference",           el => el.GetProperty("reference").ToString()},
-        {"Part",                 el => el.GetProperty("part_name").ToString()},
-        {"IPN",                  el => SafeGetProperty(el.GetProperty("part_detail"), "IPN")},
+        { "Part",                 el => el.GetProperty("part_name").ToString()},
+        { "IPN",                  el => SafeGetProperty(el.GetProperty("part_detail"), "IPN")},
         { "Description",         el => el.GetProperty("title").ToString()},
-        {"Completed items",      el => SafeGetCompletedItems(el, "completed", "quantity")}, //factor out
+        { "Completed items",      el => SafeGetCompletedItems(el, "completed", "quantity")}, //factor out
         { "Build Status",        el => el.GetProperty("status_text").ToString()},
-        {"External",             el => el.GetProperty("external").ToString().Equals("False") ? "No" : "Yes"}, //factor out 
-        {"Target Date",          el => SafeGetDate(el, "target_date")},
+        { "External",             el => el.GetProperty("external").ToString().Equals("False") ? "No" : "Yes"}, //factor out 
+        { "Target Date",          el => SafeGetDate(el, "target_date")},
         { "Completion Date",     el => SafeGetDate(el, "completion_date")},
         { "Issued by",           el => SafeGetProperty(el.GetProperty("issued_by_detail"), "username") + SafeGetProperty(el.GetProperty("issued_by_detail"), "first_name") + " " + SafeGetProperty(el.GetProperty("issued_by_detail"), "last_name") },
         { "Responsible",         el => SafeGetProperty(el.GetProperty("responsible_detail"), "name")}

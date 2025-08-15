@@ -6,6 +6,7 @@ public abstract class TableRow : BaseComponent
 {
     private ILocator TableRowHeaders() => this.page.Locator("table thead th:not([class*='selector-cell'])");
     protected readonly Dictionary<string, string> Row;
+    protected ILocator? TableRowLocator;
     public TableRow(IPage page) : base(page)
     {
         this.Row = new Dictionary<string, string>();
@@ -13,6 +14,8 @@ public abstract class TableRow : BaseComponent
 
     public async Task InitializeRow(ILocator rowLocator)
     {
+        this.TableRowLocator = rowLocator;
+
         var headersList = await this.TableRowHeaders().AllAsync();
         for (int i = 0; i < headersList.Count; i++)
         {
@@ -78,6 +81,19 @@ public abstract class TableRow : BaseComponent
             {
                 return false;
             }
+        }
+    }
+
+    //Actions
+    public async Task ClickRow()
+    {
+        if (this.TableRowLocator != null)
+        {
+            await this.TableRowLocator.ClickAsync();
+        }
+        else
+        {
+            throw new Exception("Table row locator was not assigned and still null.");
         }
     }
 

@@ -3,12 +3,12 @@ using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Pages.SectionTabs;
 
-public abstract class BaseInvenTablePage : BasePage
+public abstract class BaseInvenTableTab : BasePage
 {
     private ILocator AddButton() => this.page.Locator("button[aria-label*='add']");
     protected Table table;
 
-    public BaseInvenTablePage(IPage page) : base(page)
+    public BaseInvenTableTab(IPage page) : base(page)
     {
         this.table = new Table(this.page);
     }

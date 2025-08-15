@@ -4,10 +4,13 @@ using InvenTreeAutomationFramework.Components;
 using InvenTreeAutomationFramework.Dialogs;
 using InvenTreeAutomationFramework.Enums;
 using InvenTreeAutomationFramework.Pages.Home;
-using InvenTreeAutomationFramework.Pages.SectionTabs;
 using InvenTreeAutomationFramework.Pages.Login;
 using InvenTreeAutomationFramework.Util;
-using InvenTreeAutomationFramework.Pages.SideBarTabs.Manufacturing;
+using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection;
+using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.SideBarTabs;
+using InvenTreeAutomationFramework.Pages.Tabs.ItemDetailTabs.CommonSideBarTabs;
+using InvenTreeAutomationFramework.Pages.ItemDetailTabs;
+using System.Text.Json;
 
 namespace InvenTreeAutomationFramework.Tests;
 
@@ -68,5 +71,58 @@ public class Tester : BaseTest
                 $"Backend: {AssertionMessageHelper.PrintEnumerable(respVal)} " +
                 $"Difference: {AssertionMessageHelper.PrintEnumerable(row.GetRowAsDictionary().Except(respVal))}");
         }
+    }
+
+    [Test]
+    public async Task Test2()
+    {
+        //Login
+        LoginPage loginPage = new LoginPage(Page);
+        SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
+        await loginPage.UserLogin(username, password);
+        await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
+
+        //Verify Logged In Success
+        NotificationDialog notificationDialog = new NotificationDialog(Page);
+        Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.LoginSuccess), Is.EqualTo(true), "Notification for successful login did not appear. User failed to login");
+
+        //Navigate to Manufacturing Page
+        HomePage homePage = new HomePage(Page);
+        await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
+
+        //Landed on Manufacturing Section Page
+        ManufacturingSectionTab mst = homePage.GetManufacturingTab();
+        BuildOrderTab buildOrderTab = mst.GetBuildOrderTab();
+        await buildOrderTab.InitializeTable();
+        JsonElement? response = APIHelper.GetResponse();
+
+        Table buildOrderTable = buildOrderTab.GetTableObj(); //Init table from UI
+        List<string> headerNames = await buildOrderTable.GetHeaderNames();
+        await buildOrderTable.GetRow("BO0026").ClickRow(); //Open product page
+
+        //Landed on Manufacturing Product Page        
+        ManufacturingItemDetailTab midt = new ManufacturingItemDetailTab(Page);
+        await midt.SelectSideBarTab("Build Details"); //TODO: Sidebar enums class 
+
+        DetailsTab dt = midt.GetDetailsTab();
+        await dt.InitializeDetails();
+
+        //Validate Details and Information Displayed in table matches
+        Dictionary<string, Dictionary<string, string>> responseResults = APIHelper.GetResponseTableResults(response, headerNames);
+        // Dictionary<string, string> responseResultsValue = responseResults.First().Value;
+
+        JsonElement partDetails = APIHelper.GetPropertyInList(APIPropertyEnums.Results, APIPropertyEnums.Reference, APIPropertyEnums.PartDetail, "BO0026");
+
+        string s = partDetails.GetProperty("name").ToString();
+
+        Assert.That(s.Equals(dt.GetDetails()["Part"]), Is.EqualTo(true), $"Backend: {s} UI: {dt.GetDetails()["Part"]}");
+
+        // string productReference = responseResultsValue["Reference"];
+
+        // var temp = response?.GetProperty("part_detail");
+
+        await dt.ClickThreeDots();
+        await dt.SelectDropdown("Edit");
+
     }
 }

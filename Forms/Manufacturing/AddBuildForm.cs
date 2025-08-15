@@ -28,13 +28,13 @@ public class AddBuildForm : BaseForm
     public async Task SelectPart(string option)
     {
         await this.PartDropdownButton().ClickAsync();
-        await ListboxHelper.SelectListboxOption(this.page, option);
+        await DropDownHelper.SelectListboxOption(this.page, option);
     }
 
     public async Task SelectResponsible(string option)
     {
         await this.ResponsibleDropdownButton().ClickAsync();
-        await ListboxHelper.SelectListboxOption(this.page, option);
+        await DropDownHelper.SelectListboxOption(this.page, option);
     }
 
     public async Task FillBuildOrderRef(string input) { await this.BuildOrderRefInput().FillAsync(input); }
