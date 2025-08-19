@@ -51,6 +51,16 @@ public static class APIHelper
         await SetResponse();
     }
 
+    public static async Task WaitForWithPKOrderDetailsResponse(IPage page, string pk)
+    {
+        waitForResponseTask = await page.WaitForResponseAsync(
+            response => response.Url.Contains(pk + "/?") && response.Url.Contains(APIEndpoints.APIEndpointDictionary[APIHelperEnums.Root]) &&
+            response.Url.Contains(APIEndpoints.COMMON_ORDER_DETAIL_PAYLOAD)
+            && response.Status == 200);
+
+        await SetResponse();
+    }
+
     //Get Response and set as JsonElement as Class Variable
     public static async Task SetResponse()
     {

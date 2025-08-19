@@ -9,7 +9,7 @@ public abstract class BaseTest
     protected static IPage Page;
     protected static string username;
     protected static string password;
-    // protected static APIHelper apiHelper;
+    protected static string language;
 
     [SetUp]
     public async Task Setup()
@@ -17,6 +17,9 @@ public abstract class BaseTest
         //Default User Is "All Acess User" (handles warnings)
         username = Environment.GetEnvironmentVariable("ALL_ACCESS_USERNAME") ?? "";
         password = Environment.GetEnvironmentVariable("ALL_ACCESS_PASSWORD") ?? "";
+
+        //Default, Application is set to English language
+        language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
 
         var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync(new() { Headless = false });
@@ -49,5 +52,11 @@ public abstract class BaseTest
         //Modify string to match the .env file naming convention
         username = Environment.GetEnvironmentVariable(role.ToUpper().Replace(" ", "_") + "_USERNAME") ?? "";
         password = Environment.GetEnvironmentVariable(role.ToUpper().Replace(" ", "_") + "_PASSWORD") ?? "";
+    }
+
+    [AllureStep("Set Application Language {language}")]
+    public static void SetLanguage(string lang)
+    {
+        language = Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()) ?? "";
     }
 }

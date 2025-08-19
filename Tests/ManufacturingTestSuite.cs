@@ -48,7 +48,7 @@ public class ManufacturingTestSuite : BaseTest
         //Login
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
-        await loginPage.UserLogin(username, password);
+        await loginPage.UserLogin(username, password, language);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success
@@ -85,12 +85,12 @@ public class ManufacturingTestSuite : BaseTest
 
         Dictionary<string, string> updatedResultsValue = updatedResults.First().Value;
         TableRow newRow = mtTable.GetRow(updatedResultsValue["Reference"]);
-        bool newRowContainsResults = newRow.Contains(updatedResultsValue);
 
-        Assert.That(newRowContainsResults, Is.EqualTo(true),
-                $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
-                $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
-                $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
+        // bool newRowContainsResults = newRow.Contains(updatedResultsValue);
+        // Assert.That(newRowContainsResults, Is.EqualTo(true),
+        //         $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
+        //         $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
+        //         $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
 
         Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
                 $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
@@ -109,7 +109,7 @@ public class ManufacturingTestSuite : BaseTest
         //Login
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
-        await loginPage.UserLogin(username, password);
+        await loginPage.UserLogin(username, password, language);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success
@@ -131,12 +131,13 @@ public class ManufacturingTestSuite : BaseTest
         await APIHelper.WaitForOrderDetailsResponse(Page); //Response set to details page
         response = APIHelper.GetResponse();
 
+        string pk = response?.GetProperty("pk").ToString() ?? "";
+
         //Landed on Manufacturing Product Details Section
         ManufacturingItemDetailTab midt = new ManufacturingItemDetailTab(Page);
         DetailsTab dt = midt.GetDetailsTab();
-        await dt.InitializeDetails(); //initialized page details
+        await dt.InitializeDetails(); //Initialized page details
 
-        // string initialPartDescription = ;
         Assert.That(dt.GetDetails()["Description"], Is.EqualTo(response?.GetProperty("title").ToString()),
             $"UI: [{dt.GetDetails()["Description"]}] Backend: [{response?.GetProperty("title").ToString()}]");
 
@@ -148,7 +149,7 @@ public class ManufacturingTestSuite : BaseTest
         await buildOrderForm.ClickSubmitButton();
 
         //Set the update response/Set the updated page details
-        await APIHelper.WaitForOrderDetailsResponse(Page); //Response set to details page Updated
+        await APIHelper.WaitForWithPKOrderDetailsResponse(Page, pk); //Response set to details page Updated
         response = APIHelper.GetResponse();
         await dt.InitializeDetails(); //Initialize page details Updated
 

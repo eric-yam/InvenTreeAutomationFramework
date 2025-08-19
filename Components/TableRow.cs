@@ -21,27 +21,30 @@ public abstract class TableRow : BaseComponent
         for (int i = 0; i < headersList.Count; i++)
         {
             string? colName = await headersList[i].TextContentAsync();
-            string? colVal;
+            string? colVal = await rowLocator.Locator($"td:nth-child({i + 2})").TextContentAsync();
 
+            if (colName != null && colVal != null)
+            {
+                this.Row.Add(colName, colVal);
+            }
+
+            // string? colVal;
             /*
                 This if statement deciding on the locator was necessary if they decided to 
                 re-add the "invalid" "valid" tag in the Issued By column.
                 Currently InvenTree website has been reverted and does not include the additional
                 tag in the Issued by column. Kept just in case.    
             */
-            if (await rowLocator.Locator($"td:nth-child({i + 2}) div:nth-child(3)").CountAsync() > 0)
-            {
-                colVal = await rowLocator.Locator($"td:nth-child({i + 2}) div:nth-child(3)").TextContentAsync();
-            }
-            else
-            {
-                colVal = await rowLocator.Locator($"td:nth-child({i + 2})").TextContentAsync();
-            }
+            // if (await rowLocator.Locator($"td:nth-child({i + 2}) div:nth-child(3)").CountAsync() > 0)
+            // {
+            //     colVal = await rowLocator.Locator($"td:nth-child({i + 2}) div:nth-child(3)").TextContentAsync();
+            // }
+            // else
+            // {
+            //     colVal = await rowLocator.Locator($"td:nth-child({i + 2})").TextContentAsync();
+            // }
 
-            if (colName != null && colVal != null)
-            {
-                this.Row.Add(colName, colVal);
-            }
+
         }
     }
 

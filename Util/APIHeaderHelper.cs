@@ -28,9 +28,9 @@ public static class APIHeaderHelper
     //============================================= Order Details Page ===============================================================================
         // { "Revision",               el => SafeGetProperty(el.GetProperty("part_detail"), "revision")},
         // { "Status",                 el => el.GetProperty("status_text").ToString()},
-        // { "Purchase Order",         el => "Placeholder."},
+        // { "Purchase Order",         el => "TODO: external PO"},
         // { "Can Build",              el => "Placeholder."},
-        // { "Source Location",        el => "Placeholder."},
+        // { "Source Location",        el => "Any location"},
         // { "Issued By",              el => SafeGetProperty(el.GetProperty("issued_by_detail"), "username") + SafeGetProperty(el.GetProperty("issued_by_detail"), "first_name") + " " + SafeGetProperty(el.GetProperty("issued_by_detail"), "last_name") },
         // { "Created",                el => el.GetProperty("creation_date").ToString()},
         // { "Start Date",             el => el.GetProperty("start_date").ToString()},

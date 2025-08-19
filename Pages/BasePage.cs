@@ -1,5 +1,3 @@
-using InvenTreeAutomationFramework.Components;
-using InvenTreeAutomationFramework.Util;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Pages;

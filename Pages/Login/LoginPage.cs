@@ -10,15 +10,19 @@ public class LoginPage : BasePage
     private ILocator UsernameInput() => this.page.Locator("input[data-path='username']");
     private ILocator PasswordInput() => this.page.Locator("input[data-path='password']");
     private ILocator LoginButton() => this.page.Locator("button[type='submit']");
+    private ILocator LanguageToggleButton() => this.page.Locator("button[aria-label='Language toggle']");
+    private ILocator LanguageInput() => this.page.Locator("div[class*='mantine-Input-wrapper'] input[aria-label='Select language']");
 
     //Constructor
     public LoginPage(IPage page) : base(page) { }
 
     //Actions
-    public async Task UserLogin(string username, string password)
+    public async Task UserLogin(string username, string password, string language)
     {
         await this.InputUsername(username);
         await this.InputPassword(password);
+        await this.ClickLanguageToggleButton();
+        await this.InputLanguage(language);
         await this.ClickLoginButton();
     }
 
@@ -30,4 +34,10 @@ public class LoginPage : BasePage
 
     [AllureStep("User clicks login button")]
     public async Task ClickLoginButton() { await this.LoginButton().ClickAsync(); }
+
+    [AllureStep("User clicks the language toggle button")]
+    public async Task ClickLanguageToggleButton() { await this.LanguageToggleButton().ClickAsync(); }
+
+    [AllureStep("User inputs the language {input}")]
+    public async Task InputLanguage(string input) { await this.LanguageInput().FillAsync(input); }
 }
