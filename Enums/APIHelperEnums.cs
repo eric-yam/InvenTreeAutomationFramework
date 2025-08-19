@@ -9,9 +9,10 @@ public enum APIHelperEnums
 public static class APIEndpoints
 {
     public const string COMMON_TABLE_PAYLOAD = "detail=true&limit=25&offset=0";
+    public const string COMMON_ORDER_DETAIL_PAYLOAD = "_detail=true";
     public static Dictionary<APIHelperEnums, string> APIEndpointDictionary = new Dictionary<APIHelperEnums, string>()
     {
         { APIHelperEnums.Root, "/api/"},
-        { APIHelperEnums.UserMe, "/api/user/me/"}
-    };    
+        { APIHelperEnums.UserMe, "/api/user/me/"},
+    };
 }

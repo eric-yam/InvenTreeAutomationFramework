@@ -41,6 +41,16 @@ public static class APIHelper
         await SetResponse();
     }
 
+    public static async Task WaitForOrderDetailsResponse(IPage page)
+    {
+        waitForResponseTask = await page.WaitForResponseAsync(
+            response => response.Url.Contains(APIEndpoints.APIEndpointDictionary[APIHelperEnums.Root]) &&
+            response.Url.Contains(APIEndpoints.COMMON_ORDER_DETAIL_PAYLOAD)
+            && response.Status == 200);
+
+        await SetResponse();
+    }
+
     //Get Response and set as JsonElement as Class Variable
     public static async Task SetResponse()
     {
@@ -84,6 +94,22 @@ public static class APIHelper
             }
         }
         return ResponseResults;
+    }
+
+    public static Dictionary<string, string> TranslateHeaderToAPIKey(JsonElement? response, List<string> tableRowHeaders)
+    {
+        Dictionary<string, string> translatedResult = new Dictionary<string, string>();
+
+        if (response != null && response.Value.ValueKind != JsonValueKind.Null)
+        {
+            //Enable Translate Header To API Key without getting the result property from the Response, any api repsonse can be translated
+            foreach (string header in tableRowHeaders)
+            {
+                translatedResult.Add(header, APIHeaderHelper.TranslateToAPIKey[header](response.Value));
+            }
+        }
+
+        return translatedResult;
     }
 
     //Gets JsonElement property that is a list and returns it as List

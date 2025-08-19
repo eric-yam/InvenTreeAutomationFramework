@@ -11,6 +11,7 @@ using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.S
 using InvenTreeAutomationFramework.Pages.Tabs.ItemDetailTabs.CommonSideBarTabs;
 using InvenTreeAutomationFramework.Pages.ItemDetailTabs;
 using System.Text.Json;
+using InvenTreeAutomationFramework.Forms.Manufacturing;
 
 namespace InvenTreeAutomationFramework.Tests;
 
@@ -100,6 +101,9 @@ public class Tester : BaseTest
         List<string> headerNames = await buildOrderTable.GetHeaderNames();
         await buildOrderTable.GetRow("BO0026").ClickRow(); //Open product page
 
+        await APIHelper.WaitForOrderDetailsResponse(Page);
+        response = APIHelper.GetResponse();
+
         //Landed on Manufacturing Product Page        
         ManufacturingItemDetailTab midt = new ManufacturingItemDetailTab(Page);
         await midt.SelectSideBarTab("Build Details"); //TODO: Sidebar enums class 
@@ -107,22 +111,56 @@ public class Tester : BaseTest
         DetailsTab dt = midt.GetDetailsTab();
         await dt.InitializeDetails();
 
+        Dictionary<string, string> generalPartInfo = APIHelper.TranslateHeaderToAPIKey(response, dt.GetDetails().Keys.ToList());
+        //parameterize and separate out dictionaries into separate dictionaries in api header helper
+
+        Assert.That(generalPartInfo["Part"], Is.EqualTo(dt.GetDetails()["Part"]));
+
+        await dt.SelectThreeDotsOptions("Edit");
+        AddBuildForm abf = new AddBuildForm(Page);
+
+        await abf.FillDescription("Edited Description - 3");
+        await abf.FillBuildQuantity("1");
+        await abf.ClickSubmitButton();
+
+        await APIHelper.WaitForOrderDetailsResponse(Page);
+        response = APIHelper.GetResponse();
+        await dt.InitializeDetails();
+
+        Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.SuccessItemUpdated), Is.EqualTo(true), "Notification for successful item update did not appear. Failed to update item");
+        
+        Assert.That(response?.GetProperty("title").ToString(), Is.EqualTo(dt.GetDetails()["Description"]));
+
+
+
         //Validate Details and Information Displayed in table matches
-        Dictionary<string, Dictionary<string, string>> responseResults = APIHelper.GetResponseTableResults(response, headerNames);
-        // Dictionary<string, string> responseResultsValue = responseResults.First().Value;
 
-        JsonElement partDetails = APIHelper.GetPropertyInList(APIPropertyEnums.Results, APIPropertyEnums.Reference, APIPropertyEnums.PartDetail, "BO0026");
+        // JsonElement partDetails = APIHelper.GetPropertyInList(APIPropertyEnums.Results, APIPropertyEnums.Reference, APIPropertyEnums.PartDetail, "BO0026");
 
-        string s = partDetails.GetProperty("name").ToString();
+        // string s = partDetails.GetProperty("name").ToString();
 
-        Assert.That(s.Equals(dt.GetDetails()["Part"]), Is.EqualTo(true), $"Backend: {s} UI: {dt.GetDetails()["Part"]}");
+        // Assert.That(s.Equals(dt.GetDetails()["Part"]), Is.EqualTo(true), $"Backend: {s} UI: {dt.GetDetails()["Part"]}");
 
-        // string productReference = responseResultsValue["Reference"];
+        // // string productReference = responseResultsValue["Reference"];
 
-        // var temp = response?.GetProperty("part_detail");
+        // // var temp = response?.GetProperty("part_detail");
 
-        await dt.ClickThreeDots();
-        await dt.SelectDropdown("Edit");
+        // await dt.SelectThreeDotsOptions("Edit");
+        // AddBuildForm abf = new AddBuildForm(Page);
+
+        // await abf.FillDescription("Edited Description");
+        // await abf.FillBuildQuantity("4");
+        // await abf.ClickSubmitButton();
+        // Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.SuccessItemUpdated), Is.EqualTo(true), "Notification for successful item update did not appear. Failed to update item");
+
+        // //Go back to homepage to get updated response
+        // await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
+        // partDetails = APIHelper.GetPropertyInList(APIPropertyEnums.Results, APIPropertyEnums.Reference, APIPropertyEnums.PartDetail, "BO0026");
+
+        // s = partDetails.GetProperty("name").ToString();
+
+        // Assert.That(s.Equals(dt.GetDetails()["Part"]), Is.EqualTo(true), $"Backend: {s} UI: {dt.GetDetails()["Part"]}");
+
 
     }
 }

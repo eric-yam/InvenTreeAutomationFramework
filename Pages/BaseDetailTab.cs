@@ -10,19 +10,24 @@ public abstract class BaseDetailTab : BasePage
     private ILocator BarcodeDropdownButton() => this.page.Locator("button[aria-label*='action-menu-barcode-actions']");
     private ILocator PrintOptionsDropdownButton() => this.page.Locator("button[aria-label*='action-menu-printing-actions']");
     private ILocator ThreeDotsDropdownButton() => this.page.Locator("button[aria-label*='action-menu'][data-variant='transparent']");
-    private ILocator DropdownOptions() => this.page.Locator("div[class*='mantine-Menu-dropdown'] button div[class*='itemLabel']");
-
 
     public BaseDetailTab(IPage page) : base(page) { }
 
     public async Task<string> GetProductHeader() { return await this.ProductHeader().TextContentAsync() ?? ""; }
     public async Task<string> GetProductSubheading() { return await this.ProductSubheading().TextContentAsync() ?? ""; }
-    public async Task ClickBarcodeDropdownButton() { await this.BarcodeDropdownButton().ClickAsync(); }
-    public async Task ClickPrintOptionsDropdown() { await this.PrintOptionsDropdownButton().ClickAsync(); }
-    public async Task ClickThreeDots() { await this.ThreeDotsDropdownButton().ClickAsync(); }
-
-    public async Task SelectDropdown(string option)
+    public async Task SelectBarcodeDropdownOption(string option)
     {
+        await this.BarcodeDropdownButton().ClickAsync();
+        await DropDownHelper.SelectMantineMenuOption(this.page, option);
+    }
+    public async Task SelectPrintOptions(string option)
+    {
+        await this.PrintOptionsDropdownButton().ClickAsync();
+        await DropDownHelper.SelectMantineMenuOption(this.page, option);
+    }
+    public async Task SelectThreeDotsOptions(string option)
+    {
+        await this.ThreeDotsDropdownButton().ClickAsync();
         await DropDownHelper.SelectMantineMenuOption(this.page, option);
     }
 }

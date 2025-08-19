@@ -5,7 +5,8 @@ public enum NotificationEnums
     LoginSuccess,
     LoginFail,
     LogoutSuccess,
-    SuccessItemCreated
+    SuccessItemCreated,
+    SuccessItemUpdated
 }
 
 public static class Notifications
@@ -15,6 +16,7 @@ public static class Notifications
         { NotificationEnums.LoginSuccess, "Login successful Logged in successfully"},
         { NotificationEnums.LoginFail, "Login failed Check your input and try again."},
         { NotificationEnums.LogoutSuccess, "Logged Out Successfully logged out"},
-        { NotificationEnums.SuccessItemCreated, "Success Item Created"}
+        { NotificationEnums.SuccessItemCreated, "Success Item Created"},
+        { NotificationEnums.SuccessItemUpdated, "Success Item Updated"}
     };
 }

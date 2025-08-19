@@ -9,14 +9,16 @@ public class AddBuildForm : BaseForm
     private ILocator PartDropdownButton() => this.page.Locator("div[help_text='Select part to build'] div[class=' css-23xn0o-indicatorContainer']");
     private ILocator DescriptionInput() => this.page.Locator("input[help_text='Brief description of the build (optional)']");
     private ILocator BuildQuantityInput() => this.page.Locator("input[name='quantity']");
+    private ILocator IncrementBuildQuantityButton() => this.page.Locator("input[name='quantity'] + div button[class*='mantine-NumberInput-control'][data-direction='up']");
+    private ILocator DecrementBuildQuantityButton() => this.page.Locator("input[name='quantity'] + div button[class*='mantine-NumberInput-control'][data-direction='down']");
     private ILocator TargetCompletionDateInput() => this.page.Locator("input[aria-label='date-field-target_date']");
     private ILocator ExternalLinkInput() => this.page.Locator("input[help_text='Link to external URL']");
-    private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class=' css-23xn0o-indicatorContainer']");    
+    private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class=' css-23xn0o-indicatorContainer']");
 
     public AddBuildForm(IPage page) : base(page) { }
 
     public async Task FillForm(string part, string desc, string quantity, string targetDate, string external, string responsible)
-    {        
+    {
         await this.SelectPart(part);
         await this.FillDescription(desc);
         await this.FillBuildQuantity(quantity);
@@ -42,4 +44,7 @@ public class AddBuildForm : BaseForm
     public async Task FillBuildQuantity(string input) { await this.BuildQuantityInput().FillAsync(input); }
     public async Task FillTargetCompletionDate(string input) { await this.TargetCompletionDateInput().FillAsync(input); }
     public async Task FillExternalLink(string input) { await this.ExternalLinkInput().FillAsync(input); }
+    public async Task ClickIncrementBuildQuantityButton() { await this.IncrementBuildQuantityButton().ClickAsync(); }
+    public async Task ClickDecrementBuildQuantityButton() { await this.DecrementBuildQuantityButton().ClickAsync(); }
+
 }

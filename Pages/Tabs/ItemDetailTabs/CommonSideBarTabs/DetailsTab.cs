@@ -17,6 +17,11 @@ public class DetailsTab : BaseDetailTab
     {
         var infoTable = await this.DetailTables().AllAsync();
 
+        if (this.ProductInformation.Count > 0)
+        {
+            this.ProductInformation.Clear();
+        }
+
         foreach (var row in infoTable)
         {
             //TODO: Refactor as constants

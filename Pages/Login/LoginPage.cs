@@ -5,6 +5,7 @@ namespace InvenTreeAutomationFramework.Pages.Login;
 
 public class LoginPage : BasePage
 {
+    //TODO: Add language selector
     //Locators
     private ILocator UsernameInput() => this.page.Locator("input[data-path='username']");
     private ILocator PasswordInput() => this.page.Locator("input[data-path='password']");
