@@ -117,7 +117,7 @@ public class Tester : BaseTest
         Assert.That(generalPartInfo["Part"], Is.EqualTo(dt.GetDetails()["Part"]));
 
         await dt.SelectThreeDotsOptions("Edit");
-        AddBuildForm abf = new AddBuildForm(Page);
+        BuildOrderForm abf = new BuildOrderForm(Page);
 
         await abf.FillDescription("Edited Description - 3");
         await abf.FillBuildQuantity("1");

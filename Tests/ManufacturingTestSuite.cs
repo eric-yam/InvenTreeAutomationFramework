@@ -66,9 +66,9 @@ public class ManufacturingTestSuite : BaseTest
 
         //Open/Fill Build Add Form 
         await buildOrderTab.ClickAddButton();
-        AddBuildForm addBuildForm = new AddBuildForm(Page);
-        await addBuildForm.FillForm("Blue Chair", "Automation - Test", "2", "2025-12-04", "", "admin");
-        await addBuildForm.ClickSubmitButton();
+        BuildOrderForm buildOrderForm = new BuildOrderForm(Page);
+        await buildOrderForm.FillForm("Blue Chair", "Automation - Test", "2", "2025-12-04", "", "admin");
+        await buildOrderForm.ClickSubmitButton();
 
         //Verify Successfully Created New Item Notification Visible
         Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.SuccessItemCreated), Is.EqualTo(true), "Notification for successful item created did not appear. Failed to create new item");
@@ -85,17 +85,17 @@ public class ManufacturingTestSuite : BaseTest
 
         Dictionary<string, string> updatedResultsValue = updatedResults.First().Value;
         TableRow newRow = mtTable.GetRow(updatedResultsValue["Reference"]);
-        var temp = newRow.Contains(updatedResultsValue);
+        bool newRowContainsResults = newRow.Contains(updatedResultsValue);
 
-        Assert.That(temp, Is.EqualTo(true),
+        Assert.That(newRowContainsResults, Is.EqualTo(true),
                 $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
                 $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
                 $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
 
-        // Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
-        //         $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
-        //         $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
-        //         $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
+        Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
+                $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
+                $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
+                $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
     }
 
     //Edit Manufcaturing Item 
@@ -142,10 +142,10 @@ public class ManufacturingTestSuite : BaseTest
 
         //Open Build Order Form - Perform Edits 
         await dt.SelectThreeDotsOptions("Edit");
-        AddBuildForm abf = new AddBuildForm(Page);
-        await abf.FillDescription("External PCB assembly - Edited Description - " + DateTime.Now);
-        await abf.ClickIncrementBuildQuantityButton();
-        await abf.ClickSubmitButton();
+        BuildOrderForm buildOrderForm = new BuildOrderForm(Page);
+        await buildOrderForm.FillDescription("External PCB assembly - Edited Description - " + DateTime.Now);
+        await buildOrderForm.ClickIncrementBuildQuantityButton();
+        await buildOrderForm.ClickSubmitButton();
 
         //Set the update response/Set the updated page details
         await APIHelper.WaitForOrderDetailsResponse(Page); //Response set to details page Updated

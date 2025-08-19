@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Forms.Manufacturing;
 
-public class AddBuildForm : BaseForm
+public class BuildOrderForm : BaseForm
 {
     private ILocator BuildOrderRefInput() => this.page.Locator("input[help_text='Build Order Reference']");
     private ILocator PartDropdownButton() => this.page.Locator("div[help_text='Select part to build'] div[class=' css-23xn0o-indicatorContainer']");
@@ -15,7 +15,7 @@ public class AddBuildForm : BaseForm
     private ILocator ExternalLinkInput() => this.page.Locator("input[help_text='Link to external URL']");
     private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class=' css-23xn0o-indicatorContainer']");
 
-    public AddBuildForm(IPage page) : base(page) { }
+    public BuildOrderForm(IPage page) : base(page) { }
 
     public async Task FillForm(string part, string desc, string quantity, string targetDate, string external, string responsible)
     {
