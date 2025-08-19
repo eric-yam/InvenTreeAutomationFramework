@@ -51,6 +51,16 @@ public static class APIHelper
         await SetResponse();
     }
 
+    /*
+        Used to wait for a specific response for Order Details, using PK to specify
+        which response to catch
+            - There is a scenario where, when editing a build order with a Parent Build,
+            there will be 2 similar responses in the API Network tab. Capturing the PK
+            key and re-using it will help identify the one we edited.
+
+            - 26/?part_detail=true and 29/?part_detail=true are returned, given item 26 has parent build as 29
+            - further specify the response to wait for pk = 26 to wait for the correct response.
+    */
     public static async Task WaitForWithPKOrderDetailsResponse(IPage page, string pk)
     {
         waitForResponseTask = await page.WaitForResponseAsync(
