@@ -34,7 +34,6 @@ public class ManufacturingTestSuite : BaseTest
     [Description("User logs in and adds a new build order in the manufacturing section. Table is validated to ensure new build order is added in the manufacturing inventory table.")]
     public async Task Test_1_Add_Build_Form()
     {
-
         /*
             As of 2025/08/17, they added an additional tag in the Issued By column that also indicates Active or Inactive for the
             Issued By person, but it is not present in the API response. Currently unsure where to find the information
@@ -131,7 +130,7 @@ public class ManufacturingTestSuite : BaseTest
         await APIHelper.WaitForOrderDetailsResponse(Page); //Response set to details page
         response = APIHelper.GetResponse();
 
-        string pk = response?.GetProperty("pk").ToString() ?? "";
+        string pk = response?.GetProperty(APIProperty.APIPropertyDictionary[APIPropertyEnums.PK]).ToString() ?? "";
 
         //Landed on Manufacturing Product Details Section
         ManufacturingItemDetailTab midt = new ManufacturingItemDetailTab(Page);

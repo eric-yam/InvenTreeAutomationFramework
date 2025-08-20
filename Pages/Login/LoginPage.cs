@@ -5,7 +5,6 @@ namespace InvenTreeAutomationFramework.Pages.Login;
 
 public class LoginPage : BasePage
 {
-    //TODO: Add language selector
     //Locators
     private ILocator UsernameInput() => this.page.Locator("input[data-path='username']");
     private ILocator PasswordInput() => this.page.Locator("input[data-path='password']");
@@ -19,25 +18,42 @@ public class LoginPage : BasePage
     //Actions
     public async Task UserLogin(string username, string password, string language)
     {
-        await this.InputUsername(username);
-        await this.InputPassword(password);
         await this.ClickLanguageToggleButton();
         await this.InputLanguage(language);
+
+        await this.InputUsername(username);
+        await this.InputPassword(password);
         await this.ClickLoginButton();
     }
 
     [AllureStep("User inputs username")]
-    public async Task InputUsername(string username) { await this.UsernameInput().FillAsync(username); }
+    public async Task InputUsername(string username)
+    {
+        await this.UsernameInput().WaitForAsync();
+        await this.UsernameInput().FillAsync(username);
+    }
 
     [AllureStep("User inputs password")]
-    public async Task InputPassword(string password) { await this.PasswordInput().FillAsync(password); }
+    public async Task InputPassword(string password)
+    {
+        await this.PasswordInput().WaitForAsync();
+        await this.PasswordInput().FillAsync(password);
+    }
 
     [AllureStep("User clicks login button")]
     public async Task ClickLoginButton() { await this.LoginButton().ClickAsync(); }
 
     [AllureStep("User clicks the language toggle button")]
-    public async Task ClickLanguageToggleButton() { await this.LanguageToggleButton().ClickAsync(); }
+    public async Task ClickLanguageToggleButton()
+    {
+        await this.LanguageToggleButton().WaitForAsync();
+        await this.LanguageToggleButton().ClickAsync();
+    }
 
     [AllureStep("User inputs the language {input}")]
-    public async Task InputLanguage(string input) { await this.LanguageInput().FillAsync(input); }
+    public async Task InputLanguage(string input)
+    {
+        await this.LanguageInput().WaitForAsync();
+        await this.LanguageInput().FillAsync(input);
+    }
 }
