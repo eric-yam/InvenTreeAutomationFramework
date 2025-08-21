@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Components;
@@ -74,6 +75,7 @@ public abstract class TableRow : BaseComponent
         return resultList;
     }
 
+    [AllureStep("Verify Context TableRow Is Content Equivalent To The Expected TableRow")]
     public bool Equals(TableRow other)
     {
 
@@ -120,6 +122,7 @@ public abstract class TableRow : BaseComponent
     }
 
     //Actions
+    [AllureStep("User Clicks Table Row")]
     public async Task ClickRow()
     {
         if (this.TableRowLocator != null)

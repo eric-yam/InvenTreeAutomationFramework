@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Util;
 using Microsoft.Playwright;
 
@@ -42,6 +42,7 @@ public class Table : BaseComponent
         return this.table;
     }
 
+    [AllureStep("Get Row With Key[{key}]")]
     public TableRow GetRow(string key)
     {
         return this.table[key];

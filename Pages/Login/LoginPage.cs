@@ -1,4 +1,5 @@
 using Allure.NUnit.Attributes;
+using InvenTreeAutomationFramework.Util;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Pages.Login;
@@ -10,55 +11,53 @@ public class LoginPage : BasePage
     private ILocator PasswordInput() => this.page.Locator("input[data-path='password']");
     private ILocator LoginButton() => this.page.Locator("button[type='submit']");
     private ILocator LanguageToggleButton() => this.page.Locator("button[aria-label='Language toggle']");
-    private ILocator LanguageInput() => this.page.Locator("div[class*='mantine-Input-wrapper'] input[aria-label='Select language']");
+    private ILocator LanguageDropdown() => this.page.Locator("div[class*='mantine-InputWrapper-root mantine-Select-root']");
 
     //Constructor
     public LoginPage(IPage page) : base(page) { }
 
     //Actions
-    [AllureStep("User sets the application language to [{language}] and logs in using with username [{username}]")]
-    public async Task UserLogin(string username, [Skip] string password, string language)
+    [AllureStep("User Sets The Application Language To [{language}] and Logs In With Username [{username}]")]
+    public async Task UserLogin(string username, [Skip] string password, int languageIndex)
     {
         await this.ClickLanguageToggleButton();
-        await this.InputLanguage(language);
+        await this.SelectLanguage(languageIndex);
 
         await this.InputUsername(username);
         await this.InputPassword(password);
         await this.ClickLoginButton();
     }
 
-    [AllureStep("User inputs username")]
-    public async Task InputUsername(string username)
+    [AllureStep("User Inputs Username")]
+    public async Task InputUsername([Skip] string username)
     {
-        await this.UsernameInput().WaitForAsync();
-        // await this.UsernameInput().FillAsync(username);
+        await this.UsernameInput().WaitForAsync();        
         await this.UsernameInput().ClickAsync();
         await this.page.Keyboard.TypeAsync(username);
     }
 
-    [AllureStep("User inputs password")]
-    public async Task InputPassword(string password)
+    [AllureStep("User Inputs Password")]
+    public async Task InputPassword([Skip] string password)
     {
-        await this.PasswordInput().WaitForAsync();
-        // await this.PasswordInput().FillAsync(password);
+        await this.PasswordInput().WaitForAsync();        
         await this.PasswordInput().ClickAsync();
         await this.page.Keyboard.TypeAsync(password);
     }
 
-    [AllureStep("User clicks login button")]
+    [AllureStep("User Clicks Login Button")]
     public async Task ClickLoginButton() { await this.LoginButton().ClickAsync(); }
 
-    [AllureStep("User clicks the language toggle button")]
+    [AllureStep("User Clicks The Language Toggle Button")]
     public async Task ClickLanguageToggleButton()
     {
         await this.LanguageToggleButton().WaitForAsync();
         await this.LanguageToggleButton().ClickAsync();
     }
 
-    [AllureStep("User inputs the language {input}")]
-    public async Task InputLanguage(string input)
+    [AllureStep("User Selects the Language [{input}]")]
+    public async Task SelectLanguage(int langIndex)
     {
-        await this.LanguageInput().WaitForAsync();
-        await this.LanguageInput().FillAsync(input);
+        await this.LanguageDropdown().ClickAsync();
+        await DropDownHelper.SelectListboxOptionByIndex(this.page, langIndex);
     }
 }

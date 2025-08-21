@@ -1,3 +1,5 @@
+using Allure.Net.Commons;
+using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Enums;
 using InvenTreeAutomationFramework.Pages;
 using Microsoft.Playwright;
@@ -13,6 +15,7 @@ public class NotificationDialog : BasePage
 
     public NotificationDialog(IPage page) : base(page) { }
 
+    [AllureStep("Verify Notificaiton Message [{notifEnum}] is Displayed")]
     public async Task<bool> VerifyNotifMsg(NotificationEnums notifEnum)
     {
         await this.NotificationBanner().WaitForAsync();
@@ -20,6 +23,11 @@ public class NotificationDialog : BasePage
         string? notifDesc = await NotificationBanner().Locator(NOTIFICATION_DESCRIPTION).TextContentAsync();
 
         string? msg = notifTitle + " " + notifDesc;
+        
+        AllureLifecycle.Instance.UpdateStep(stepResult =>
+        {
+            stepResult.name = $"Notificaiton message: [{Notifications.NotificationDictionary[notifEnum]}] is displayed";
+        });
 
         if (msg != null)
         {

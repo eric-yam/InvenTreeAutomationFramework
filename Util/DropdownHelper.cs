@@ -5,7 +5,8 @@ namespace InvenTreeAutomationFramework.Util;
 public static class DropDownHelper
 {
     private const string LISTBOX_LOCATOR = "div[role='listbox']";
-    private const string LISTBOX_OPTION_LOCATOR = "p";
+    private const string LISTBOX_OPTION_LOCATOR_P = "p";
+    private const string LISTBOX_OPTION_LOCATOR_SPAN = "span";
     private const string LISTBOX_LOADING_LOCATOR = "//div[contains(text(), 'Loading...')]";
 
     private const string MANTINE_DROPDOWN_LOCATOR = "div[class*='mantine-Menu-dropdown']";
@@ -15,8 +16,16 @@ public static class DropDownHelper
     {
         await page.Locator(LISTBOX_LOCATOR).WaitForAsync();
         await page.WaitForSelectorAsync(LISTBOX_LOADING_LOCATOR, new PageWaitForSelectorOptions { State = WaitForSelectorState.Detached, Timeout = 3000 });
-        IReadOnlyList<ILocator> partList = await page.Locator(LISTBOX_LOCATOR).Locator(LISTBOX_OPTION_LOCATOR).AllAsync();
+        IReadOnlyList<ILocator> partList = await page.Locator(LISTBOX_LOCATOR).Locator(LISTBOX_OPTION_LOCATOR_P).AllAsync();
         await SelectOption(partList, option);
+    }
+
+    public static async Task SelectListboxOptionByIndex(IPage page, int index)
+    {
+        await page.Locator(LISTBOX_LOCATOR).WaitForAsync();
+        await page.WaitForSelectorAsync(LISTBOX_LOADING_LOCATOR, new PageWaitForSelectorOptions { State = WaitForSelectorState.Detached, Timeout = 3000 });
+        IReadOnlyList<ILocator> partList = await page.Locator(LISTBOX_LOCATOR).Locator(LISTBOX_OPTION_LOCATOR_SPAN).AllAsync();
+        await partList[index].ClickAsync();
     }
 
     public static async Task SelectMantineMenuOption(IPage page, string option)

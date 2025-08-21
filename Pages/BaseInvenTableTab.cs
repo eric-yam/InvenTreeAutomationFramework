@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Components;
 using Microsoft.Playwright;
 
@@ -19,6 +20,7 @@ public abstract class BaseInvenTableTab : BasePage
     }
 
     //Actions
+    [AllureStep("User Clicks Add Button On Inventory Table")]
     public async Task ClickAddButton()
     {
         await this.AddButton().ClickAsync();

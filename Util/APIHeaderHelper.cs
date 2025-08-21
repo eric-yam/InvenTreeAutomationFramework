@@ -17,7 +17,7 @@ public static class APIHeaderHelper
         { "Part",                el => el.GetProperty("part_name").ToString()},
         { "IPN",                 el => SafeGetProperty(el.GetProperty("part_detail"), "IPN")},
         { "Description",         el => el.GetProperty("title").ToString()},
-        { "Completed items",     el => SafeGetCompletedItems(el, "completed", "quantity")}, //factor out
+        { "Completed",     el => SafeGetCompletedItems(el, "completed", "quantity")}, //factor out
         { "Build Status",        el => el.GetProperty("status_text").ToString()},
         { "External",            el => el.GetProperty("external").ToString().Equals("False") ? "No" : "Yes"}, //factor out 
         { "Target Date",         el => SafeGetDate(el, "target_date")},

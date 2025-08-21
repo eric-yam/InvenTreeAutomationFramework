@@ -12,6 +12,7 @@ using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection.S
 using InvenTreeAutomationFramework.Pages.ItemDetailTabs;
 using InvenTreeAutomationFramework.Pages.Tabs.ItemDetailTabs.CommonSideBarTabs;
 using System.Text.Json;
+using Allure.Net.Commons;
 
 namespace InvenTreeAutomationFramework.Tests;
 
@@ -44,19 +45,29 @@ public class ManufacturingTestSuite : BaseTest
 
             Currently the website has been reverted and no longer includes the tag
         */
+
         //Login
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
         SetLanguage("English");
-        await loginPage.UserLogin(username, password, language);
+        await loginPage.UserLogin(username, password, languageIndex);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success
         NotificationDialog notificationDialog = new NotificationDialog(Page);
-        Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.LoginSuccess), Is.EqualTo(true), "Notification for successful login did not appear. User failed to login");
+        HomePage homePage = new HomePage(Page);
+
+        await AllureApi.Step("Verify Login Successful", async () =>
+        {
+            Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.LoginSuccess), Is.EqualTo(true),
+                "Notification for successful login did not appear. User failed to login");
+
+            Assert.That(await homePage.AppTitleDisplayed(), Is.EqualTo(true),
+                "Application title is not currently displayed");
+
+        });
 
         //Navigate to Manufacturing Page
-        HomePage homePage = new HomePage(Page);
         await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
 
         ManufacturingSectionTab mst = homePage.GetManufacturingTab();
@@ -71,7 +82,11 @@ public class ManufacturingTestSuite : BaseTest
         await buildOrderForm.ClickSubmitButton();
 
         //Verify Successfully Created New Item Notification Visible
-        Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.SuccessItemCreated), Is.EqualTo(true), "Notification for successful item created did not appear. Failed to create new item");
+        await AllureApi.Step("Verify Succesfully Created New Item", async () =>
+        {
+            Assert.That(await notificationDialog.VerifyNotifMsg(NotificationEnums.SuccessItemCreated), Is.EqualTo(true),
+                "Notification for successful item created did not appear. Failed to create new item");
+        });
 
         //Verify Added To Table
         await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
@@ -83,7 +98,7 @@ public class ManufacturingTestSuite : BaseTest
         // List<JsonElement> updatedResults = APIHelper.GetListProperty(APIPropertyEnums.Results);
         // updatedResults.First();
 
-        Dictionary<string, string> updatedResultsValue = updatedResults.First().Value;
+        Dictionary<string, string> updatedResultsValue = updatedResults.First().Value; //First entry should be the newest one we just created
         TableRow newRow = mtTable.GetRow(updatedResultsValue["Reference"]);
 
         // bool newRowContainsResults = newRow.Contains(updatedResultsValue);
@@ -92,10 +107,13 @@ public class ManufacturingTestSuite : BaseTest
         //         $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
         //         $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
 
-        Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
+        AllureApi.Step("Verify New Build Order Successfully Added Into Inventory Table", () =>
+        {
+            Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
                 $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
                 $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
                 $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
+        });
     }
 
     //Edit Manufcaturing Item 
@@ -110,7 +128,7 @@ public class ManufacturingTestSuite : BaseTest
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
         SetLanguage("English");
-        await loginPage.UserLogin(username, password, language);
+        await loginPage.UserLogin(username, password, languageIndex);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success

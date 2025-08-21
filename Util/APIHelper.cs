@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Threading.Tasks;
+using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Enums;
 using Microsoft.Playwright;
 
@@ -11,6 +12,7 @@ public static class APIHelper
     public static JsonElement? currentResponseJson;
 
     //Store Network Response
+    [AllureStep("Wait For API Endpoint Response [{urlEndpoint}]")]
     public static async Task StartWaitingForResponse(IPage page, string urlEndpoint)
     {
         waitForResponseTask = await page.WaitForResponseAsync(
@@ -21,6 +23,7 @@ public static class APIHelper
     }
 
     //Store Network Response Specified For Table Response
+    [AllureStep("Wait For API Endpoint Response For An Inventory Table")]
     public static async Task WaitForTableResponse(IPage page)
     {
         /*
@@ -41,6 +44,7 @@ public static class APIHelper
         await SetResponse();
     }
 
+    [AllureStep("Wait For API Endpoint Response For An Item/Order Details Page")]
     public static async Task WaitForOrderDetailsResponse(IPage page)
     {
         waitForResponseTask = await page.WaitForResponseAsync(
@@ -61,6 +65,7 @@ public static class APIHelper
             - 26/?part_detail=true and 29/?part_detail=true are returned, given item 26 has parent build as 29
             - further specify the response to wait for pk = 26 to wait for the correct response.
     */
+    [AllureStep("Wait For API Endpoint Response For AN Item/Order Details Page With Pk: [{pk}]")]
     public static async Task WaitForWithPKOrderDetailsResponse(IPage page, string pk)
     {
         waitForResponseTask = await page.WaitForResponseAsync(
@@ -72,6 +77,7 @@ public static class APIHelper
     }
 
     //Get Response and set as JsonElement as Class Variable
+    [AllureStep("Received And Set Response")]
     public static async Task SetResponse()
     {
         if (waitForResponseTask != null)
@@ -80,6 +86,7 @@ public static class APIHelper
         }
     }
 
+    [AllureStep("Get Response")]
     public static JsonElement? GetResponse()
     {
         if (currentResponseJson != null)
@@ -94,6 +101,7 @@ public static class APIHelper
     }
 
     //TODO: Revisit
+    [AllureStep("Map The UI Table Header Names To The Corresponding API Resulst Response Values")]
     public static Dictionary<string, Dictionary<string, string>> GetResponseTableResults(JsonElement? response, List<string> tableRowHeaders)
     {
         Dictionary<string, Dictionary<string, string>> ResponseResults = new Dictionary<string, Dictionary<string, string>>();

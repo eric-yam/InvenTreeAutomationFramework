@@ -9,9 +9,10 @@ public abstract class BaseTest
     protected static IPage Page;
     protected static string username;
     protected static string password;
-    protected static string language;
+    protected static int languageIndex;
 
     [SetUp]
+    [AllureBefore("Setup test configuration and start the browser")]
     public async Task Setup()
     {
         //Default User Is "All Acess User" (handles warnings)
@@ -19,7 +20,7 @@ public abstract class BaseTest
         password = Environment.GetEnvironmentVariable("ALL_ACCESS_PASSWORD") ?? "";
 
         //Default, Application is set to English language
-        language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
+        languageIndex = Convert.ToInt32(Environment.GetEnvironmentVariable("LANG_ENGLISH"));
 
         var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync(new() { Headless = false });
@@ -41,12 +42,13 @@ public abstract class BaseTest
     }
 
     [TearDown]
+    [AllureAfter("Close the browser")]
     public async Task TearDown()
     {
         await Page.CloseAsync();
     }
 
-    [AllureStep("User role is set as [{role}] for test run")]
+    [AllureStep("User Role Is Set as [{role}] For Test Run")]
     public static void SetUserRole(string role)
     {
         //Modify string to match the .env file naming convention
@@ -54,9 +56,11 @@ public abstract class BaseTest
         password = Environment.GetEnvironmentVariable(role.ToUpper().Replace(" ", "_") + "_PASSWORD") ?? "";
     }
 
-    [AllureStep("Set Application Language [{lang}] for test run")]
+    [AllureStep("Set Application Language [{lang}] For Test Run")]
     public static void SetLanguage(string lang)
     {
-        language = Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()) ?? "";
+        //TODO: This method doesn't work 
+        // languageIndex = Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()) ?? "";
+        languageIndex = Convert.ToInt32(Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()));
     }
 }

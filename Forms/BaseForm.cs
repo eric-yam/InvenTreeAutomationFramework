@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Forms;
@@ -12,7 +13,13 @@ public abstract class BaseForm
     {
         this.page = page;
     }
+
+    [AllureStep("User Closes Form Via X Button")]
     public async Task ClickCloseWindowButton() { await this.CloseWindowButton().ClickAsync(); }
+
+    [AllureStep("User Clicks SUbmit Button On Form")]
     public async Task ClickSubmitButton() { await this.SubmitButton().ClickAsync(); }
+
+    [AllureStep("User Clicks Cancel Button On Form")]
     public async Task ClickCancelButton() { await this.CancelButton().ClickAsync(); }
 }
