@@ -46,7 +46,7 @@ public abstract class BaseTest
         await Page.CloseAsync();
     }
 
-    [AllureStep("User role is set as {role}")]
+    [AllureStep("User role is set as [{role}] for test run")]
     public static void SetUserRole(string role)
     {
         //Modify string to match the .env file naming convention
@@ -54,7 +54,7 @@ public abstract class BaseTest
         password = Environment.GetEnvironmentVariable(role.ToUpper().Replace(" ", "_") + "_PASSWORD") ?? "";
     }
 
-    [AllureStep("Set Application Language {language}")]
+    [AllureStep("Set Application Language [{lang}] for test run")]
     public static void SetLanguage(string lang)
     {
         language = Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()) ?? "";

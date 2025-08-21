@@ -16,7 +16,8 @@ public class LoginPage : BasePage
     public LoginPage(IPage page) : base(page) { }
 
     //Actions
-    public async Task UserLogin(string username, string password, string language)
+    [AllureStep("User sets the application language to [{language}] and logs in using with username [{username}]")]
+    public async Task UserLogin(string username, [Skip] string password, string language)
     {
         await this.ClickLanguageToggleButton();
         await this.InputLanguage(language);
@@ -30,14 +31,18 @@ public class LoginPage : BasePage
     public async Task InputUsername(string username)
     {
         await this.UsernameInput().WaitForAsync();
-        await this.UsernameInput().FillAsync(username);
+        // await this.UsernameInput().FillAsync(username);
+        await this.UsernameInput().ClickAsync();
+        await this.page.Keyboard.TypeAsync(username);
     }
 
     [AllureStep("User inputs password")]
     public async Task InputPassword(string password)
     {
         await this.PasswordInput().WaitForAsync();
-        await this.PasswordInput().FillAsync(password);
+        // await this.PasswordInput().FillAsync(password);
+        await this.PasswordInput().ClickAsync();
+        await this.page.Keyboard.TypeAsync(password);
     }
 
     [AllureStep("User clicks login button")]
