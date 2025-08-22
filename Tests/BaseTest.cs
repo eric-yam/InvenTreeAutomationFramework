@@ -28,7 +28,7 @@ public abstract class BaseTest
         language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
 
         //Assign Authentication Token
-        token = Environment.GetEnvironmentVariable("TOKEN") ?? ""; 
+        token = Environment.GetEnvironmentVariable("TOKEN") ?? "";
 
         var playwright = await Playwright.CreateAsync();
 
@@ -72,16 +72,19 @@ public abstract class BaseTest
     [AllureStep("Setup APIRequestContext")]
     public static async Task SetupAPIRequestContext(IPlaywright playwright)
     {
+        //Get Token Via Basic Authentication with username and password
+        var token = await APIRequestHelper.APIGetToken(playwright, username, password);
+
+        //Create new API Request Context object with the Token Authentication and Re-use it as now its authorized
         Request = await playwright.APIRequest.NewContextAsync(new()
         {
             BaseURL = $"{Environment.GetEnvironmentVariable("BASE_URL")}",
             ExtraHTTPHeaders = new Dictionary<string, string>
             {
-                { "Authorization", $"Token {Environment.GetEnvironmentVariable("TOKEN")}"}
-            },
-
+                { "Authorization", $"Token {token}"}
+            }
         });
 
-        await APIHelper.ChangeLanguagePatchRequest(Request, language);
+        await APIRequestHelper.ChangeLanguagePatchRequest(Request, language);
     }
 }

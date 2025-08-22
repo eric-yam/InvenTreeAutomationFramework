@@ -10,16 +10,6 @@ public static class APIHelper
     public static IResponse? waitForResponseTask;
     public static JsonElement? currentResponseJson;
 
-    [AllureStep("Send API PATCH Request To Set Language Of Application To [{lang}]")]
-    public static async Task ChangeLanguagePatchRequest(IAPIRequestContext request, string lang)
-    {
-        IAPIResponse debugResponse = await request.PatchAsync(APIEndpoints.APIEndpointDictionary[APIHelperEnums.ProfileLanguage],
-        new()
-        {
-            DataObject = new { language = lang }
-        });
-    }
-
     //Store Network Response
     [AllureStep("Wait For API Endpoint Response [{urlEndpoint}]")]
     public static async Task StartWaitingForResponse(IPage page, string urlEndpoint)
@@ -95,7 +85,7 @@ public static class APIHelper
         }
     }
 
-    [AllureStep("Get Response")]
+    [AllureStep("Get API Response")]
     public static JsonElement? GetResponse()
     {
         if (currentResponseJson != null)

@@ -23,10 +23,6 @@ public class ManufacturingTestSuite : BaseTest
 {
     /*
         TODO: Factor out the test data into external Test Data files
-        TODO: Sometimes the account doesn't start in the english language. In that case, we should use an API call before the automation starts to 
-        set the language to english     
-            Request URL https://demo.inventree.org/api/user/profile/
-            Request Method PATCH
     */
     [Test]
     [AllureOwner("Eric Yam")]
@@ -63,7 +59,6 @@ public class ManufacturingTestSuite : BaseTest
 
             Assert.That(await homePage.AppTitleDisplayed(), Is.EqualTo(true),
                 "Application title is not currently displayed");
-
         });
 
         //Navigate to Manufacturing Page
