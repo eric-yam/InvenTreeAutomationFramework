@@ -37,10 +37,11 @@ public abstract class BaseTest
     }
 
     [TearDown]
-    [AllureAfter("Close the browser")]
+    [AllureAfter("Close the browser and API Request")]
     public async Task TearDown()
     {
         await Page.CloseAsync();
+        await Request.DisposeAsync();
     }
 
     [AllureStep("User Role Is Set as [{role}] For Test Run")]
