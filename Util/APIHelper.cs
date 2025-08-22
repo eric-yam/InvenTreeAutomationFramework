@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Threading.Tasks;
 using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Enums;
 using Microsoft.Playwright;
@@ -10,6 +9,16 @@ public static class APIHelper
 {
     public static IResponse? waitForResponseTask;
     public static JsonElement? currentResponseJson;
+
+    [AllureStep("Send API PATCH Request To Set Language Of Application To [{lang}]")]
+    public static async Task ChangeLanguagePatchRequest(IAPIRequestContext request, string lang)
+    {
+        IAPIResponse debugResponse = await request.PatchAsync(APIEndpoints.APIEndpointDictionary[APIHelperEnums.ProfileLanguage],
+        new()
+        {
+            DataObject = new { language = lang }
+        });
+    }
 
     //Store Network Response
     [AllureStep("Wait For API Endpoint Response [{urlEndpoint}]")]
@@ -101,7 +110,7 @@ public static class APIHelper
     }
 
     //TODO: Revisit
-    [AllureStep("Map The UI Table Header Names To The Corresponding API Resulst Response Values")]
+    [AllureStep("Map The UI Table Header Names To The Corresponding API Results Response Values")]
     public static Dictionary<string, Dictionary<string, string>> GetResponseTableResults(JsonElement? response, List<string> tableRowHeaders)
     {
         Dictionary<string, Dictionary<string, string>> ResponseResults = new Dictionary<string, Dictionary<string, string>>();
@@ -124,6 +133,7 @@ public static class APIHelper
         return ResponseResults;
     }
 
+    [AllureStep("Map The UI Details Page Fields To The Corresponding API Details Page Response Values")]
     public static Dictionary<string, string> TranslateHeaderToAPIKey(JsonElement? response, List<string> tableRowHeaders)
     {
         Dictionary<string, string> translatedResult = new Dictionary<string, string>();

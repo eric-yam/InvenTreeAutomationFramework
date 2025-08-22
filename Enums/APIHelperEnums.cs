@@ -3,7 +3,8 @@ namespace InvenTreeAutomationFramework.Enums;
 public enum APIHelperEnums
 {
     Root,
-    UserMe
+    UserMe,
+    ProfileLanguage
 }
 
 public static class APIEndpoints
@@ -14,5 +15,6 @@ public static class APIEndpoints
     {
         { APIHelperEnums.Root, "/api/"},
         { APIHelperEnums.UserMe, "/api/user/me/"},
+        { APIHelperEnums.ProfileLanguage, "/api/user/profile/"}
     };
 }
