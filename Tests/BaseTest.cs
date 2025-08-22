@@ -28,7 +28,7 @@ public abstract class BaseTest
         language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
 
         //Assign Authentication Token
-        token = Environment.GetEnvironmentVariable("TOKEN") ?? "";
+        token = Environment.GetEnvironmentVariable("TOKEN") ?? ""; 
 
         var playwright = await Playwright.CreateAsync();
 

@@ -15,6 +15,7 @@ public class NotificationDialog : BasePage
 
     public NotificationDialog(IPage page) : base(page) { }
 
+    //TODO: Adjust the notification locator so that it will not fail when the additional language change notification appears
     [AllureStep("Verify Notificaiton Message [{notifEnum}] is Displayed")]
     public async Task<bool> VerifyNotifMsg(NotificationEnums notifEnum)
     {
@@ -23,7 +24,7 @@ public class NotificationDialog : BasePage
         string? notifDesc = await NotificationBanner().Locator(NOTIFICATION_DESCRIPTION).TextContentAsync();
 
         string? msg = notifTitle + " " + notifDesc;
-        
+
         AllureLifecycle.Instance.UpdateStep(stepResult =>
         {
             stepResult.name = $"Notificaiton message: [{Notifications.NotificationDictionary[notifEnum]}] is displayed";
