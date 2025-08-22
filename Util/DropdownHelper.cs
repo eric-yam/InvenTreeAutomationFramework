@@ -20,14 +20,6 @@ public static class DropDownHelper
         await SelectOption(partList, option);
     }
 
-    public static async Task SelectListboxOptionByIndex(IPage page, int index)
-    {
-        await page.Locator(LISTBOX_LOCATOR).WaitForAsync();
-        await page.WaitForSelectorAsync(LISTBOX_LOADING_LOCATOR, new PageWaitForSelectorOptions { State = WaitForSelectorState.Detached, Timeout = 3000 });
-        IReadOnlyList<ILocator> partList = await page.Locator(LISTBOX_LOCATOR).Locator(LISTBOX_OPTION_LOCATOR_SPAN).AllAsync();
-        await partList[index].ClickAsync();
-    }
-
     public static async Task SelectMantineMenuOption(IPage page, string option)
     {
         await page.Locator(MANTINE_DROPDOWN_LOCATOR).WaitForAsync();

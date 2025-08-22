@@ -9,7 +9,7 @@ public abstract class BaseTest
     protected static IPage Page;
     protected static string username;
     protected static string password;
-    protected static int languageIndex;
+    protected static string language;
 
     [SetUp]
     [AllureBefore("Setup test configuration and start the browser")]
@@ -20,7 +20,7 @@ public abstract class BaseTest
         password = Environment.GetEnvironmentVariable("ALL_ACCESS_PASSWORD") ?? "";
 
         //Default, Application is set to English language
-        languageIndex = Convert.ToInt32(Environment.GetEnvironmentVariable("LANG_ENGLISH"));
+        language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
 
         var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync(new() { Headless = false });
@@ -59,8 +59,6 @@ public abstract class BaseTest
     [AllureStep("Set Application Language [{lang}] For Test Run")]
     public static void SetLanguage(string lang)
     {
-        //TODO: This method doesn't work 
-        // languageIndex = Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()) ?? "";
-        languageIndex = Convert.ToInt32(Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()));
+        language = Environment.GetEnvironmentVariable("LANG_" + lang.ToUpper()) ?? "";
     }
 }

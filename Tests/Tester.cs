@@ -29,7 +29,7 @@ public class Tester : BaseTest
     {
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
-        await loginPage.UserLogin(username, password, languageIndex);
+        await loginPage.UserLogin(username, password);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         NotificationDialog notificationDialog = new NotificationDialog(Page);
@@ -80,7 +80,7 @@ public class Tester : BaseTest
         //Login
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
-        await loginPage.UserLogin(username, password, languageIndex);
+        await loginPage.UserLogin(username, password);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success

@@ -50,7 +50,7 @@ public class ManufacturingTestSuite : BaseTest
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
         SetLanguage("English");
-        await loginPage.UserLogin(username, password, languageIndex);
+        await loginPage.UserLogin(username, password);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success
@@ -128,7 +128,7 @@ public class ManufacturingTestSuite : BaseTest
         LoginPage loginPage = new LoginPage(Page);
         SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
         SetLanguage("English");
-        await loginPage.UserLogin(username, password, languageIndex);
+        await loginPage.UserLogin(username, password);
         await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success
