@@ -18,6 +18,7 @@ public class BuildOrderForm : BaseForm
 
     public BuildOrderForm(IPage page) : base(page) { }
 
+    //Actions
     [AllureStep("User Fills Build Order Form")]
     public async Task FillForm(string part, string desc, string quantity, string targetDate, string external, string responsible)
     {

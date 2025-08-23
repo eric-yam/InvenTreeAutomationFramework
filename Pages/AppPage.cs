@@ -17,7 +17,7 @@ public abstract class AppPage : BasePage
         this.homeTabStrip = new HomeTabStrip(this.page);
     }
 
-    //Common page actions
+    //Actions
     [AllureStep("Tab [{name}] Has Been Selected")]
     public async Task SelectTab([Skip] string name)
     {

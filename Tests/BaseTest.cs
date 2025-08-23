@@ -11,7 +11,7 @@ public abstract class BaseTest
     protected static string username;
     protected static string password;
     protected static string language;
-    protected static string token;
+
 
     [SetUp]
     [AllureBefore("Setup test configuration and start the browser")]
@@ -27,13 +27,13 @@ public abstract class BaseTest
         //Default, Application is set to English language
         language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
 
-        //Assign Authentication Token
-        token = Environment.GetEnvironmentVariable("TOKEN") ?? "";
-
         var playwright = await Playwright.CreateAsync();
 
-        await SetupBrowser(playwright);
-        await SetupAPIRequestContext(playwright);
+        string token = await APIRequestHelper.APIGetToken(playwright, username, password);
+
+        //Share the authentication token between browser and api session to share the same changes 
+        await SetupBrowser(playwright, token);
+        await SetupAPIRequestContext(playwright, token);
     }
 
     [TearDown]
@@ -53,10 +53,32 @@ public abstract class BaseTest
     }
 
     [AllureStep("Setup and Launch Browser")]
-    public static async Task SetupBrowser(IPlaywright playwright)
+    public static async Task SetupBrowser(IPlaywright playwright, string token)
     {
-        var browser = await playwright.Chromium.LaunchAsync(new() { Headless = false });
-        Page = await browser.NewPageAsync();
+        /*
+            By using the same Authentication Token and headers, we make both the 
+            Browser Context and API Request Context the same, therefore changes
+            made through API requests will be visible in the Browser Context 
+            as they will both be on the same session.
+            This is known as Shared Authentication State.
+        */
+
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = false });
+
+        //Specify Context to have the same headers and token as IAPIRequestContext
+        var context = await browser.NewContextAsync(
+            new BrowserNewContextOptions()
+            {
+                ExtraHTTPHeaders = new Dictionary<string, string>
+                {
+                    { "Authorization", $"Token {token}"},
+                    { "Content-Type", "application/json" },
+                    { "Accept", "application/json" }
+                }
+            }
+        );
+
+        Page = await context.NewPageAsync();
 
         string? webAppUrl = TestContext.Parameters["webAppUrl"];
         if (webAppUrl != null)
@@ -71,20 +93,22 @@ public abstract class BaseTest
     }
 
     [AllureStep("Setup APIRequestContext")]
-    public static async Task SetupAPIRequestContext(IPlaywright playwright)
+    public static async Task SetupAPIRequestContext(IPlaywright playwright, string token)
     {
-        //Get Token Via Basic Authentication with username and password
-        var token = await APIRequestHelper.APIGetToken(playwright, username, password);
 
         //Create new API Request Context object with the Token Authentication and Re-use it as now its authorized
-        Request = await playwright.APIRequest.NewContextAsync(new()
-        {
-            BaseURL = $"{Environment.GetEnvironmentVariable("BASE_URL")}",
-            ExtraHTTPHeaders = new Dictionary<string, string>
+        Request = await playwright.APIRequest.NewContextAsync(
+            new APIRequestNewContextOptions()
             {
-                { "Authorization", $"Token {token}"}
+                BaseURL = $"{Environment.GetEnvironmentVariable("BASE_URL")}",
+                ExtraHTTPHeaders = new Dictionary<string, string>
+                        {
+                            { "Authorization", $"Token {token}"},
+                            { "Content-Type", "application/json" },
+                            { "Accept", "application/json" }
+                        }
             }
-        });
+        );
 
         await APIRequestHelper.ChangeLanguagePatchRequest(Request, language);
     }

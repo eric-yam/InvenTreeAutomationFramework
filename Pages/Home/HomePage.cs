@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSection;
 using Microsoft.Playwright;
 

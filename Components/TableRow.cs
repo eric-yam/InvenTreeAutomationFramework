@@ -44,8 +44,6 @@ public abstract class TableRow : BaseComponent
             // {
             //     colVal = await rowLocator.Locator($"td:nth-child({i + 2})").TextContentAsync();
             // }
-
-
         }
     }
 
@@ -75,6 +73,10 @@ public abstract class TableRow : BaseComponent
         return resultList;
     }
 
+    //Abstract
+    public abstract string GetKey();
+
+    //Actions
     [AllureStep("Verify Context TableRow Is Content Equivalent To The Expected TableRow")]
     public bool Equals(TableRow other)
     {
@@ -106,6 +108,7 @@ public abstract class TableRow : BaseComponent
         }
     }
 
+    [AllureStep("Verify Content Of Context Dictionary Is Contained In Expeced Dictionary")]
     public bool Contains(Dictionary<string, string> other)
     {
         bool doesContain = true;
@@ -121,7 +124,6 @@ public abstract class TableRow : BaseComponent
         return doesContain;
     }
 
-    //Actions
     [AllureStep("User Clicks Table Row")]
     public async Task ClickRow()
     {
@@ -134,7 +136,4 @@ public abstract class TableRow : BaseComponent
             throw new Exception("Table row locator was not assigned and still null.");
         }
     }
-
-    //Abstract
-    public abstract string GetKey();
 }
