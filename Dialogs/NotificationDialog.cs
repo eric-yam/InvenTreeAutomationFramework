@@ -1,12 +1,11 @@
 using Allure.Net.Commons;
 using Allure.NUnit.Attributes;
 using InvenTreeAutomationFramework.Enums;
-using InvenTreeAutomationFramework.Pages;
 using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Dialogs;
 
-public class NotificationDialog : BasePage
+public class NotificationDialog : BaseDialog
 {
     private const string NOTIFICATION_TITLE = "div[class*='Notification-title']";
     private const string NOTIFICATION_DESCRIPTION = "div[class*='Notification-description']";
