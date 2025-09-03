@@ -7,7 +7,11 @@ public class HomeTabStrip : BaseComponent
     private const string BUTTON = "button[class*='mantine-Tabs-tab']";
     private ILocator TabStripButtons() => this.page.Locator("div[role='tablist'][data-orientation='horizontal']");
     Dictionary<string, ILocator> TabStripButtonsDictionary;
-    public HomeTabStrip(IPage page) : base(page) { this.TabStripButtonsDictionary = new Dictionary<string, ILocator>(); }
+    public HomeTabStrip(IPage page) : base(page)
+    {
+        this.TabStripButtonsDictionary = new Dictionary<string, ILocator>();
+        //TODO: think about refactoring home page. instead of having home page return tab instances, get a dictionary to map the name to the tab class
+    }
 
     public async Task SetTabstrip()
     {
