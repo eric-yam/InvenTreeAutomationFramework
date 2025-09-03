@@ -23,8 +23,6 @@ public abstract class BaseTest
 
         //Default User Is "All Acess User" (handles warnings)
         SetUserRole(UserRoles.RolesDict[UserEnums.AllAccess]);
-        // username = Environment.GetEnvironmentVariable("ALL_ACCESS_USERNAME") ?? "";
-        // password = Environment.GetEnvironmentVariable("ALL_ACCESS_PASSWORD") ?? "";
 
         //Default, Application is set to English language        
         language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
