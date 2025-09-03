@@ -31,6 +31,13 @@ public class ManufacturingTestSuite : BaseTest
     [Description("User logs in and adds a new build order in the manufacturing section. Table is validated to ensure new build order is added in the manufacturing inventory table.")]
     public async Task Test_1_Add_Build_Form()
     {
+        // GLobal page objects for test script
+        JsonElement? response = null;
+        NotificationDialog notificationDialog = new NotificationDialog(Page);
+        HomePage homePage = new HomePage(Page);
+        ManufacturingSectionTab mst = new ManufacturingSectionTab(Page);
+        BuildOrderTab buildOrderTab = new BuildOrderTab(Page);
+
         /*
             As of 2025/08/17, they added an additional tag in the Issued By column that also indicates Active or Inactive for the
             Issued By person, but it is not present in the API response. Currently unsure where to find the information
@@ -42,15 +49,24 @@ public class ManufacturingTestSuite : BaseTest
             Currently the website has been reverted and no longer includes the tag
         */
 
-        //Login
-        LoginPage loginPage = new LoginPage(Page);
-        SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
-        await loginPage.UserLogin(username, password);
-        await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
+        await AllureApi.Step($"User [{username}] logs in", async () =>
+        {
+            //Login
+            LoginPage loginPage = new LoginPage(Page);
+            // SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
+            await loginPage.UserLogin(username, password);
+            await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
+        });
+
+        // //Login
+        // LoginPage loginPage = new LoginPage(Page);
+        // // SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
+        // await loginPage.UserLogin(username, password);
+        // await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
 
         //Verify Logged In Success
-        NotificationDialog notificationDialog = new NotificationDialog(Page);
-        HomePage homePage = new HomePage(Page);
+        notificationDialog = new NotificationDialog(Page);
+        homePage = new HomePage(Page);
 
         await AllureApi.Step("Verify Login Successful", async () =>
         {
@@ -62,12 +78,16 @@ public class ManufacturingTestSuite : BaseTest
         });
 
         //Navigate to Manufacturing Page
-        await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
+        await AllureApi.Step("Navigating to Manufacturing Tab", async () =>
+        {
+            await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
 
-        ManufacturingSectionTab mst = homePage.GetManufacturingTab();
-        BuildOrderTab buildOrderTab = mst.GetBuildOrderTab();
-        await buildOrderTab.InitializeTable();
-        var response = APIHelper.GetResponse();
+            mst = homePage.GetManufacturingTab();
+            buildOrderTab = mst.GetBuildOrderTab();
+            await buildOrderTab.InitializeTable();
+            response = APIHelper.GetResponse();
+        });
+
 
         //Open/Fill Build Add Form 
         await buildOrderTab.ClickAddButton();
@@ -83,17 +103,23 @@ public class ManufacturingTestSuite : BaseTest
         });
 
         //Verify Added To Table
-        await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
-        await buildOrderTab.InitializeTable();
-        response = APIHelper.GetResponse();
+        await AllureApi.Step("Navigating to Manufacturing Tab", async () =>
+        {
+            await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
+            await buildOrderTab.InitializeTable();
+            response = APIHelper.GetResponse();
+        });
+        // await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
+        // await buildOrderTab.InitializeTable();
+        // response = APIHelper.GetResponse();
 
-        Table mtTable = buildOrderTab.GetTableObj();
-        Dictionary<string, Dictionary<string, string>> updatedResults = APIHelper.GetResponseTableResults(response, await mtTable.GetHeaderNames());
-        // List<JsonElement> updatedResults = APIHelper.GetListProperty(APIPropertyEnums.Results);
-        // updatedResults.First();
+        // Table mtTable = buildOrderTab.GetTableObj();
+        // Dictionary<string, Dictionary<string, string>> updatedResults = APIHelper.GetResponseTableResults(response, await mtTable.GetHeaderNames());
+        // // List<JsonElement> updatedResults = APIHelper.GetListProperty(APIPropertyEnums.Results);
+        // // updatedResults.First();
 
-        Dictionary<string, string> updatedResultsValue = updatedResults.First().Value; //First entry should be the newest one we just created
-        TableRow newRow = mtTable.GetRow(updatedResultsValue["Reference"]);
+        // Dictionary<string, string> updatedResultsValue = updatedResults.First().Value; //First entry should be the newest one we just created
+        // TableRow newRow = mtTable.GetRow(updatedResultsValue["Reference"]);
 
         // bool newRowContainsResults = newRow.Contains(updatedResultsValue);
         // Assert.That(newRowContainsResults, Is.EqualTo(true),
@@ -101,12 +127,21 @@ public class ManufacturingTestSuite : BaseTest
         //         $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
         //         $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
 
-        AllureApi.Step("Verify New Build Order Successfully Added Into Inventory Table", () =>
+        await AllureApi.Step("Verify New Build Order Successfully Added Into Inventory Table", async () =>
         {
-            Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
-                $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
-                $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
-                $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
+            Table mtTable = buildOrderTab.GetTableObj();
+            Dictionary<string, Dictionary<string, string>> updatedResults = APIHelper.GetResponseTableResults(response, await mtTable.GetHeaderNames());
+
+            Dictionary<string, string> updatedResultsValue = updatedResults.First().Value; //First entry should be the newest one we just created
+            TableRow newRow = mtTable.GetRow(updatedResultsValue["Reference"]);
+
+            AllureApi.Step("New Build Order Successfully Added Into Inventory Table", () =>
+            {
+                Assert.That(newRow.GetRowAsDictionary().Except(updatedResultsValue).Any(), Is.EqualTo(false),
+                    $"UI: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary())} " +
+                    $"Backend: {AssertionMessageHelper.PrintEnumerable(updatedResultsValue)} " +
+                    $"Difference: {AssertionMessageHelper.PrintEnumerable(newRow.GetRowAsDictionary().Except(updatedResultsValue))}");
+            });
         });
     }
 

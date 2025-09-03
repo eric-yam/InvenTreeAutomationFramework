@@ -1,4 +1,5 @@
 ﻿using Allure.NUnit.Attributes;
+using InvenTreeAutomationFramework.Enums;
 using InvenTreeAutomationFramework.Util;
 using Microsoft.Playwright;
 
@@ -21,10 +22,11 @@ public abstract class BaseTest
         DotNetEnv.Env.TraversePath().Load();
 
         //Default User Is "All Acess User" (handles warnings)
-        username = Environment.GetEnvironmentVariable("ALL_ACCESS_USERNAME") ?? "";
-        password = Environment.GetEnvironmentVariable("ALL_ACCESS_PASSWORD") ?? "";
+        SetUserRole(UserRoles.RolesDict[UserEnums.AllAccess]);
+        // username = Environment.GetEnvironmentVariable("ALL_ACCESS_USERNAME") ?? "";
+        // password = Environment.GetEnvironmentVariable("ALL_ACCESS_PASSWORD") ?? "";
 
-        //Default, Application is set to English language
+        //Default, Application is set to English language        
         language = Environment.GetEnvironmentVariable("LANG_ENGLISH") ?? "";
 
         var playwright = await Playwright.CreateAsync();

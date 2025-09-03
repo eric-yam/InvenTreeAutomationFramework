@@ -14,7 +14,7 @@ public class NotificationDialog : BaseDialog
 
     public NotificationDialog(IPage page) : base(page) { }
 
-    [AllureStep("Verify Notificaiton Message [{notifEnum}] is Displayed")]
+    [AllureStep("Verify Notification Message [{notifEnum}] is Displayed")]
     public async Task<bool> VerifyNotifMsg(NotificationEnums notifEnum)
     {
         await this.NotificationBanner().WaitForAsync();
