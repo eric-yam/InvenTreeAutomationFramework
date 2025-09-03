@@ -7,5 +7,3 @@ dotnet add package DotNetEnv
 
 
 ############################################################################
-API Implementation Explained
-- 
