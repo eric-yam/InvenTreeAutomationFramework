@@ -7,14 +7,14 @@ namespace InvenTreeAutomationFramework.Forms.Manufacturing;
 public class BuildOrderForm : BaseForm
 {
     private ILocator BuildOrderRefInput() => this.page.Locator("input[help_text='Build Order Reference']");
-    private ILocator PartDropdownButton() => this.page.Locator("div[help_text='Select part to build'] div[class=' css-23xn0o-indicatorContainer']");
+    private ILocator PartDropdownButton() => this.page.Locator("div[help_text='Select part to build'] div[class*='indicatorContainer']");
     private ILocator DescriptionInput() => this.page.Locator("input[help_text='Brief description of the build (optional)']");
     private ILocator BuildQuantityInput() => this.page.Locator("input[name='quantity']");
     private ILocator IncrementBuildQuantityButton() => this.page.Locator("input[name='quantity'] + div button[class*='mantine-NumberInput-control'][data-direction='up']");
     private ILocator DecrementBuildQuantityButton() => this.page.Locator("input[name='quantity'] + div button[class*='mantine-NumberInput-control'][data-direction='down']");
     private ILocator TargetCompletionDateInput() => this.page.Locator("input[aria-label='date-field-target_date']");
     private ILocator ExternalLinkInput() => this.page.Locator("input[help_text='Link to external URL']");
-    private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class=' css-23xn0o-indicatorContainer']");
+    private ILocator ResponsibleDropdownButton() => this.page.Locator("div[name='responsible'] div[class*='indicatorContainer']");
 
     public BuildOrderForm(IPage page) : base(page) { }
 
