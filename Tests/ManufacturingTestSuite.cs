@@ -52,8 +52,7 @@ public class ManufacturingTestSuite : BaseTest
         await AllureApi.Step($"User [{username}] logs in", async () =>
         {
             //Login
-            LoginPage loginPage = new LoginPage(Page);
-            // SetUserRole(UserRoles.RolesDict[UserEnums.Admin]);
+            LoginPage loginPage = new LoginPage(Page);            
             await loginPage.UserLogin(username, password);
             await APIHelper.StartWaitingForResponse(Page, APIEndpoints.APIEndpointDictionary[APIHelperEnums.UserMe]);
         });

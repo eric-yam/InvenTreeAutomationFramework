@@ -13,7 +13,6 @@ public abstract class BaseTest
     protected static string password;
     protected static string language;
 
-
     [SetUp]
     [AllureBefore("Setup test configuration and start the browser")]
     public async Task Setup()
@@ -34,6 +33,7 @@ public abstract class BaseTest
         //Share the authentication token between browser and api session to share the same changes 
         await SetupBrowser(playwright, token);
         await SetupAPIRequestContext(playwright, token);
+        await APIRequestHelper.ChangeLanguagePatchRequest(Request, language);
     }
 
     [TearDown]
@@ -44,6 +44,10 @@ public abstract class BaseTest
         await Request.DisposeAsync();
     }
 
+    /// <summary>
+    /// Sets the username and password based on the specified user role by reading from environment variables.
+    /// </summary>
+    /// <param name="role"></param>
     [AllureStep("User Role Is Set as [{role}] For Test Run")]
     public static void SetUserRole(string role)
     {
@@ -52,6 +56,13 @@ public abstract class BaseTest
         password = Environment.GetEnvironmentVariable(role.ToUpper().Replace(" ", "_") + "_PASSWORD") ?? "";
     }
 
+    /// <summary>
+    /// Sets up and launches the browser with shared authentication state using the provided token.
+    /// Note: The browser context is configured to include the same authentication headers as the API request context, enabling shared session state.
+    /// </summary>
+    /// <param name="playwright"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [AllureStep("Setup and Launch Browser")]
     public static async Task SetupBrowser(IPlaywright playwright, string token)
     {
@@ -92,10 +103,16 @@ public abstract class BaseTest
         }
     }
 
+    /// <summary>
+    /// Sets up the APIRequestContext with the provided token for authenticated API requests. 
+    /// This allows the test suite to make authorized API calls using the same session as the browser
+    /// </summary>
+    /// <param name="playwright"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [AllureStep("Setup APIRequestContext")]
     public static async Task SetupAPIRequestContext(IPlaywright playwright, string token)
     {
-
         //Create new API Request Context object with the Token Authentication and Re-use it as now its authorized
         Request = await playwright.APIRequest.NewContextAsync(
             new APIRequestNewContextOptions()
@@ -109,7 +126,5 @@ public abstract class BaseTest
                         }
             }
         );
-
-        await APIRequestHelper.ChangeLanguagePatchRequest(Request, language);
     }
 }

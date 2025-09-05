@@ -5,12 +5,18 @@ using Microsoft.Playwright;
 
 namespace InvenTreeAutomationFramework.Util;
 
+// Helper class manage API responses and extract relevant data for validation
 public static class APIHelper
 {
     public static IResponse? waitForResponseTask;
     public static JsonElement? currentResponseJson;
 
-    //Store Network Response
+    /// <summary>
+    /// Start waiting for a specific API endpoint response and store it in waitForResponseTask
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="urlEndpoint"></param>
+    /// <returns></returns>
     [AllureStep("Wait For API Endpoint Response [{urlEndpoint}]")]
     public static async Task StartWaitingForResponse(IPage page, string urlEndpoint)
     {
@@ -21,7 +27,11 @@ public static class APIHelper
         await SetResponse();
     }
 
-    //Store Network Response Specified For Table Response
+    /// <summary>
+    /// Start waiting for Store Network Response Specified For Table Response
+    /// </summary>
+    /// <param name="page"></param>
+    /// <returns></returns>
     [AllureStep("Wait For API Endpoint Response For An Inventory Table")]
     public static async Task WaitForTableResponse(IPage page)
     {
@@ -43,6 +53,11 @@ public static class APIHelper
         await SetResponse();
     }
 
+    /// <summary>
+    /// Store Network Response Specified for Item/Order Details Page
+    /// </summary>
+    /// <param name="page"></param>
+    /// <returns></returns>
     [AllureStep("Wait For API Endpoint Response For An Item/Order Details Page")]
     public static async Task WaitForOrderDetailsResponse(IPage page)
     {
@@ -54,7 +69,16 @@ public static class APIHelper
         await SetResponse();
     }
 
-    /*
+    /// <summary>
+    /// Store Network Response Specified for an Item/Order Details Page with Specified PK key
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pk"></param>
+    /// <returns></returns>
+    [AllureStep("Wait For API Endpoint Response For An Item/Order Details Page With Pk: [{pk}]")]
+    public static async Task WaitForWithPKOrderDetailsResponse(IPage page, string pk)
+    {
+        /*
         Used to wait for a specific response for Order Details, using PK to specify
         which response to catch
             - There is a scenario where, when editing a build order with a Parent Build,
@@ -63,10 +87,7 @@ public static class APIHelper
 
             - 26/?part_detail=true and 29/?part_detail=true are returned, given item 26 has parent build as 29
             - further specify the response to wait for pk = 26 to wait for the correct response.
-    */
-    [AllureStep("Wait For API Endpoint Response For AN Item/Order Details Page With Pk: [{pk}]")]
-    public static async Task WaitForWithPKOrderDetailsResponse(IPage page, string pk)
-    {
+        */
         waitForResponseTask = await page.WaitForResponseAsync(
             response => response.Url.Contains(pk + "/?") && response.Url.Contains(APIEndpoints.APIEndpointDictionary[APIHelperEnums.Root]) &&
             response.Url.Contains(APIEndpoints.COMMON_ORDER_DETAIL_PAYLOAD)
@@ -75,7 +96,10 @@ public static class APIHelper
         await SetResponse();
     }
 
-    //Get Response and set as JsonElement as Class Variable
+    /// <summary>
+    /// Set class variable currentResponseJson if it is not Null
+    /// </summary>
+    /// <returns></returns>
     [AllureStep("Received And Set Response")]
     public static async Task SetResponse()
     {
@@ -85,6 +109,11 @@ public static class APIHelper
         }
     }
 
+    /// <summary>
+    /// Return captured API response
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     [AllureStep("Get API Response")]
     public static JsonElement? GetResponse()
     {
@@ -100,6 +129,15 @@ public static class APIHelper
     }
 
     //TODO: Revisit
+    /// <summary>
+    /// Takes an API response containing a list of items and a list of table headers. 
+    /// It builds a dictionary where each key is the item's primary key (pk), and the value is another dictionary 
+    /// mapping each table header to its corresponding value from the API response. This allows you to easily 
+    /// compare or display table data from the API in your UI tests.
+    /// </summary>
+    /// <param name="response"></param>
+    /// <param name="tableRowHeaders"></param>
+    /// <returns></returns>
     [AllureStep("Map The UI Table Header Names To The Corresponding API Results Response Values")]
     public static Dictionary<string, Dictionary<string, string>> GetResponseTableResults(JsonElement? response, List<string> tableRowHeaders)
     {
@@ -123,6 +161,13 @@ public static class APIHelper
         return ResponseResults;
     }
 
+    /// <summary>
+    /// Takes an API Response from the context Item/Order Page and a list of table row headers, 
+    /// then maps each header to its corresponding value in the API response using predefined translation functions. 
+    /// </summary>
+    /// <param name="response"></param>
+    /// <param name="tableRowHeaders"></param>
+    /// <returns></returns>
     [AllureStep("Map The UI Details Page Fields To The Corresponding API Details Page Response Values")]
     public static Dictionary<string, string> TranslateHeaderToAPIKey(JsonElement? response, List<string> tableRowHeaders)
     {

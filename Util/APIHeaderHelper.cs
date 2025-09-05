@@ -5,6 +5,12 @@ namespace InvenTreeAutomationFramework.Util;
 public static class APIHeaderHelper
 {
     //TODO: Revisit after adding new table
+    /// <summary>
+    /// Dictionary to translate table column names to API JSON keys
+    /// Used to map UI table columns to their corresponding API response fields for validation
+    /// Keys are the column names as displayed in the UI
+    /// Values are functions that extract and format the corresponding value from a JsonElement    
+    /// </summary>
     public static Dictionary<string, Func<JsonElement, string>> TranslateToAPIKey = new Dictionary<string, Func<JsonElement, string>>()
     {
         // {"IPN",                 el=>el.GetProperty("part_detail").GetProperty("IPN").ToString() ?? ""},
@@ -17,9 +23,9 @@ public static class APIHeaderHelper
         { "Part",                el => el.GetProperty("part_name").ToString()},
         { "IPN",                 el => SafeGetProperty(el.GetProperty("part_detail"), "IPN")},
         { "Description",         el => el.GetProperty("title").ToString()},
-        { "Completed",     el => SafeGetCompletedItems(el, "completed", "quantity")}, //factor out
+        { "Completed",           el => SafeGetCompletedItems(el, "completed", "quantity")},
         { "Build Status",        el => el.GetProperty("status_text").ToString()},
-        { "External",            el => el.GetProperty("external").ToString().Equals("False") ? "No" : "Yes"}, //factor out 
+        { "External",            el => el.GetProperty("external").ToString().Equals("False") ? "No" : "Yes"},
         { "Target Date",         el => SafeGetDate(el, "target_date")},
         { "Completion Date",     el => SafeGetDate(el, "completion_date")},
         { "Issued by",           el => SafeGetProperty(el.GetProperty("issued_by_detail"), "username") + SafeGetProperty(el.GetProperty("issued_by_detail"), "first_name") + " " + SafeGetProperty(el.GetProperty("issued_by_detail"), "last_name") },
@@ -39,6 +45,12 @@ public static class APIHeaderHelper
         // { "Completed Outputs",      el => el.GetProperty("completed").ToString()}
     };
 
+    /// <summary>
+    /// Safely get a property from a JsonElement, returning an empty string if the property does not exist or is null.
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="property"></param>
+    /// <returns></returns>
     public static string SafeGetProperty(JsonElement element, string property)
     {
         // element != null, Guard to check JsonElement? points to a JsonElement object (Does it exist in the JSON Response)
@@ -53,6 +65,12 @@ public static class APIHeaderHelper
         }
     }
 
+    /// <summary>
+    /// Get Date property, if empty return "-"
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="property"></param>
+    /// <returns></returns>
     public static string SafeGetDate(JsonElement element, string property)
     {
         if (element.GetProperty(property).ToString().Equals(""))
@@ -65,6 +83,13 @@ public static class APIHeaderHelper
         }
     }
 
+    /// <summary>
+    /// Get Completed Items in the format of "x / y" where x is the numerator and y is the denominator
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="numerator"></param>
+    /// <param name="denom"></param>
+    /// <returns></returns>
     public static string SafeGetCompletedItems(JsonElement element, string numerator, string denom)
     {
         // el.GetProperty("completed").ToString() + " / " + el.GetProperty("quantity").ToString().Substring(0, el.GetProperty("quantity").ToString().IndexOf('.'))         
