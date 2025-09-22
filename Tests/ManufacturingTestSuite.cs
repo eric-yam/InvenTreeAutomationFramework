@@ -75,7 +75,7 @@ public class ManufacturingTestSuite : BaseTest
         {
             await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
 
-            mst = homePage.GetManufacturingTab();
+            mst = homePage.GetManufacturingSectionTab();
             buildOrderTab = mst.GetBuildOrderTab();
             await buildOrderTab.InitializeTable();
             response = APIHelper.GetResponse();
@@ -142,7 +142,7 @@ public class ManufacturingTestSuite : BaseTest
         HomePage homePage = new HomePage(Page);
         await homePage.SelectTab(Navigation.NavigationSteps[NavigationEnums.Manufacturing]);
 
-        ManufacturingSectionTab mst = homePage.GetManufacturingTab();
+        ManufacturingSectionTab mst = homePage.GetManufacturingSectionTab();
         BuildOrderTab buildOrderTab = mst.GetBuildOrderTab();
         await buildOrderTab.InitializeTable();
         JsonElement? response = APIHelper.GetResponse();

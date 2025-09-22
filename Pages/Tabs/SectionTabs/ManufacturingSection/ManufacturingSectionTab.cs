@@ -6,6 +6,7 @@ namespace InvenTreeAutomationFramework.Pages.Tabs.SectionTabs.ManufacturingSecti
 public class ManufacturingSectionTab : BaseSectionTab
 {
     private BuildOrderTab buildOrderTab;
+    
     public ManufacturingSectionTab(IPage page) : base(page)
     {
         this.buildOrderTab = new BuildOrderTab(this.page);
